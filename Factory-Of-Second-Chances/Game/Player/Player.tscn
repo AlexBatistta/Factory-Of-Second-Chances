@@ -1,0 +1,100 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://Game/Player/Player.gd" type="Script" id=1]
+[ext_resource path="res://Game/Player/Body-Parts/Body.png" type="Texture" id=2]
+[ext_resource path="res://Game/Player/Body-Parts/Texture.gd" type="Script" id=3]
+[ext_resource path="res://Game/Player/Body-Parts/Head.png" type="Texture" id=4]
+[ext_resource path="res://Game/Player/Elements/Element-0.png" type="Texture" id=5]
+[ext_resource path="res://Game/Player/Body-Parts/Face.png" type="Texture" id=6]
+[ext_resource path="res://Game/Player/Body-Parts/Left-Arm.png" type="Texture" id=7]
+[ext_resource path="res://Game/Player/Body-Parts/Right-Arm.png" type="Texture" id=8]
+[ext_resource path="res://Game/Player/Body-Parts/Left-Leg.png" type="Texture" id=9]
+[ext_resource path="res://Game/Player/Body-Parts/Right-Leg.png" type="Texture" id=10]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 40, 85 )
+
+[sub_resource type="Animation" id=2]
+length = 0.4
+loop = true
+
+[node name="Player" type="KinematicBody2D"]
+script = ExtResource( 1 )
+body_parts = [ NodePath("Body"), NodePath("Body/Head"), NodePath("Body/Head/Face"), NodePath("Body/LeftArm"), NodePath("Body/RightArm"), NodePath("Body/LeftLeg"), NodePath("Body/RightLeg") ]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="Body" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+centered = false
+offset = Vector2( -45, -20 )
+hframes = 3
+script = ExtResource( 3 )
+
+[node name="Head" type="Sprite" parent="Body"]
+position = Vector2( 12.59, -0.848999 )
+z_index = 1
+texture = ExtResource( 4 )
+centered = false
+offset = Vector2( -155, -210 )
+hframes = 3
+script = ExtResource( 3 )
+
+[node name="Element" type="Sprite" parent="Body/Head"]
+modulate = Color( 1, 0, 0, 1 )
+position = Vector2( 9.20615, -149.895 )
+texture = ExtResource( 5 )
+
+[node name="Face" type="Sprite" parent="Body/Head"]
+show_behind_parent = true
+position = Vector2( -38.229, -84.446 )
+z_index = 2
+z_as_relative = false
+texture = ExtResource( 6 )
+centered = false
+hframes = 2
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="LeftArm" type="Sprite" parent="Body"]
+position = Vector2( -32.465, -1.91299 )
+z_index = 2
+texture = ExtResource( 7 )
+centered = false
+offset = Vector2( -30, -8 )
+hframes = 2
+script = ExtResource( 3 )
+
+[node name="RightArm" type="Sprite" parent="Body"]
+position = Vector2( 31.634, 1.34399 )
+rotation = -0.18023
+z_index = -1
+texture = ExtResource( 8 )
+centered = false
+offset = Vector2( -10, -8 )
+hframes = 2
+script = ExtResource( 3 )
+
+[node name="LeftLeg" type="Sprite" parent="Body"]
+position = Vector2( -16.021, 54.635 )
+z_index = -1
+texture = ExtResource( 9 )
+centered = false
+offset = Vector2( -22, -5 )
+hframes = 3
+script = ExtResource( 3 )
+
+[node name="RightLeg" type="Sprite" parent="Body"]
+position = Vector2( 21.361, 54.392 )
+z_index = -1
+texture = ExtResource( 10 )
+centered = false
+offset = Vector2( -18, -5 )
+hframes = 3
+script = ExtResource( 3 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Idle = SubResource( 2 )

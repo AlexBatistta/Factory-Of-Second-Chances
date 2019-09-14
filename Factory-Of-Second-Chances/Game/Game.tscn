@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Game/Player/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Game/Levels/Level-01.tscn" type="PackedScene" id=2]
+
+[node name="Node2D" type="Node2D"]
+scale = Vector2( 0.5, 0.5 )
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+position = Vector2( 174.376, 326.022 )
+
+[node name="Opposite" parent="." instance=ExtResource( 1 )]
+position = Vector2( 696.457, 372.515 )
+type = 1
+opposite = true
+
+[node name="Node2D3" parent="." instance=ExtResource( 2 )]
+position = Vector2( 17.6221, 13.0522 )
+z_index = -2
+tile_data = PoolIntArray( 393217, 0, 0, 393218, 1, 0, 393219, 1, 0, 393220, 1, 0, 393221, 1, 0, 393222, 1, 0, 393223, 2, 0, 458753, 4, 0, 458754, 3, 0, 458755, 3, 0, 458756, 3, 0, 458757, 3, 0, 458758, 3, 0, 458759, 3, 0, 458760, 0, 0, 458761, 1, 0, 458762, 1, 0, 458763, 1, 0, 458764, 1, 0, 458765, 2, 0 )
