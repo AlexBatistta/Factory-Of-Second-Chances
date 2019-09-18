@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Face.png-109b17cf7b036dc004ba63df620172e8.stex"
+path="res://.import/Shadow.png-0012d68c26f83f9310b0de963e6fd849.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Game/Player/Body-Parts/Face.png"
-dest_files=[ "res://.import/Face.png-109b17cf7b036dc004ba63df620172e8.stex" ]
+source_file="res://Game/Player/Body-Parts/Shadow.png"
+dest_files=[ "res://.import/Shadow.png-0012d68c26f83f9310b0de963e6fd849.stex" ]
 
 [params]
 
