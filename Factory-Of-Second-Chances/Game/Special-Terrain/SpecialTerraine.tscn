@@ -1,0 +1,85 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Game/Special-Terrain/SpecialTerraine.gd" type="Script" id=1]
+[ext_resource path="res://Game/Special-Terrain/Puddle.png" type="Texture" id=2]
+[ext_resource path="res://Game/Special-Terrain/Smoke.png" type="Texture" id=3]
+[ext_resource path="res://Game/Special-Terrain/Sign.png" type="Texture" id=4]
+[ext_resource path="res://Game/Elements/Element-3.png" type="Texture" id=5]
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 140, 16 )
+
+[sub_resource type="Animation" id=1]
+resource_name = "Waves"
+length = 4.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1, 2, 3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 0.9, 0.95 ), Vector2( 0.95, 0.95 ), Vector2( 0.9, 1 ) ]
+}
+
+[sub_resource type="Gradient" id=2]
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0.466667 )
+
+[sub_resource type="GradientTexture" id=3]
+gradient = SubResource( 2 )
+
+[sub_resource type="ParticlesMaterial" id=4]
+emission_shape = 2
+emission_box_extents = Vector3( 200, 1, 1 )
+flag_disable_z = true
+gravity = Vector3( 0, -900, 0 )
+angular_velocity = 1.11122e-038
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+linear_accel = 100.0
+linear_accel_random = 1.0
+scale = 0.1
+scale_random = 0.25
+color_ramp = SubResource( 3 )
+
+[node name="SpecialTerrain" type="Area2D"]
+scale = Vector2( 0.5, 0.5 )
+z_index = -2
+script = ExtResource( 1 )
+type = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+scale = Vector2( 1.08527, 1 )
+shape = SubResource( 5 )
+
+[node name="Puddle" type="Sprite" parent="."]
+modulate = Color( 1, 1, 0, 1 )
+scale = Vector2( 0.988434, 0.994217 )
+texture = ExtResource( 2 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Puddle"]
+anims/Waves = SubResource( 1 )
+
+[node name="Particles2D" type="Particles2D" parent="Puddle"]
+modulate = Color( 1, 1, 1, 0.294118 )
+position = Vector2( 0, -38 )
+scale = Vector2( 0.549237, 0.5 )
+z_index = 10
+amount = 20
+process_material = SubResource( 4 )
+texture = ExtResource( 3 )
+
+[node name="Sign" type="Sprite" parent="."]
+position = Vector2( -251.115, -240 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 4 )
+
+[node name="Element" type="Sprite" parent="Sign"]
+position = Vector2( 2.65159, -68.5645 )
+scale = Vector2( 1.33333, 1.33333 )
+texture = ExtResource( 5 )

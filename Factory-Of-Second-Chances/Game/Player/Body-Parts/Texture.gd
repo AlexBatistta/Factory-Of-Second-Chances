@@ -2,6 +2,7 @@ tool
 extends Sprite
 
 var type : int = 0
+var dead : bool = false
 
 func _draw():
 	var t_color = load(texture.resource_path)
@@ -11,11 +12,11 @@ func _draw():
 	
 	var _rect = Rect2(offset, t_size)
 	var _src_rect = Rect2(Vector2(t_size.x, 0), t_size)
-	draw_texture_rect_region(t_color, _rect, _src_rect, Global._color(type, false))
+	draw_texture_rect_region(t_color, _rect, _src_rect, Global._color(type, dead, false))
 	
 	_src_rect = Rect2(Vector2(t_size.x * 2, 0), t_size)
 	if hframes == 2: _src_rect = Rect2(Vector2(t_size.x, t_size.y), t_size)
-	draw_texture_rect_region(t_color, _rect, _src_rect, Global._color(type))
+	draw_texture_rect_region(t_color, _rect, _src_rect, Global._color(type, dead))
 
 func _process(delta):
 	update()

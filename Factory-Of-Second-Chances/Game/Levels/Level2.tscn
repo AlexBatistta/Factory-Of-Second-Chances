@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Game/Tileset/TileSet.tres" type="TileSet" id=1]
 
-[node name="Node2D" type="TileMap"]
+[node name="Level2" type="TileMap"]
 z_index = -2
 tile_set = ExtResource( 1 )
 collision_layer = 4

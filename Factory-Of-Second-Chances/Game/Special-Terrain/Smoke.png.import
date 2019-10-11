@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Element-3.png-2dbdd9bc7f5a0779eb120ec7d496c8eb.stex"
+path="res://.import/Smoke.png-41ab164141c4f640fcd184f61ba44790.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Game/Player/Elements/Element-3.png"
-dest_files=[ "res://.import/Element-3.png-2dbdd9bc7f5a0779eb120ec7d496c8eb.stex" ]
+source_file="res://Game/Special-Terrain/Smoke.png"
+dest_files=[ "res://.import/Smoke.png-41ab164141c4f640fcd184f61ba44790.stex" ]
 
 [params]
 

@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Game/Levels/Levels.gd" type="Script" id=1]
+[ext_resource path="res://Game/Player/Player.tscn" type="PackedScene" id=2]
+
+[node name="Levels" type="Node2D"]
+scale = Vector2( 0.5, 0.5 )
+script = ExtResource( 1 )
+
+[node name="Player" parent="." instance=ExtResource( 2 )]
+position = Vector2( 384, 288 )
+
+[node name="Player2" parent="." instance=ExtResource( 2 )]
+position = Vector2( 1284.1, 417.5 )
+z_index = 5
+collision_layer = 2147483650
+type = 1
+player_type = 1

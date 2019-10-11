@@ -4,44 +4,44 @@ extends KinematicBody2D
 #Script que controla al personaje del jugador
 
 signal change_life
-signal fix_camera
+signal change_viewport
 
-export (int, 0, 3) var  type = 0 setget _set_type
+export (Global.Type) var type = Global.Type.FIRE setget _set_type
 export (Array, NodePath) var body_parts
 export var health = 5
-export var opposite = false setget _set_player
+export (int, "PLAYER_1", "PLAYER_2") var player_type = 0 setget _set_player
 
-const GRAVITY = 900
-const SPEED = 150
-const JUMP_SPEED = 400
+const GRAVITY = 2000
+const SPEED = 250
+const JUMP_SPEED = 800
 const TIME_TWEEN = 0.4
 
-var animation = "Idle"
 var velocity = Vector2()
-var currentDirection = 0
 var maxLife = 0
 var snap = Vector2(0, 32)
-var hurting = false
+var dead : bool = false
 
 var state
-
 var face_blink = load("res://Game/Player/Body-Parts/Face-Blink.png")
 var face_normal = load("res://Game/Player/Body-Parts/Face-Normal.png")
+var face_hurt = load("res://Game/Player/Body-Parts/Face-Hurt.png")
+
+onready var size = $CollisionShape2D.shape.extents + Vector2(20,0)
 
 func _set_type(_type):
 	type = _type
 	if Engine.is_editor_hint():
 		_change_color()
 
-func _set_player(_opposite):
-	opposite = _opposite
-	z_index = int(opposite) * 5
-	set_collision_layer_bit(int(opposite), opposite)
-	set_collision_layer_bit(int(!opposite), !opposite)
+func _set_player(_player):
+	player_type = _player
+	z_index = player_type * 5
+	set_collision_layer_bit(0, bool(!player_type))
+	set_collision_layer_bit(1, bool(player_type))
 
 func _change_color():
-	$Body/Head/Element.texture = load("res://Game/Player/Elements/Element-" + str(type) + ".png")
-	$Body/Head/Element.modulate = Global._color(type)
+	$Body/Head/Element.texture = load("res://Game/Elements/Element-" + str(type) + ".png")
+	$Body/Head/Element.modulate = Global._color(type, dead)
 	for part in body_parts:
 		get_node(part).type = type
 
@@ -68,7 +68,8 @@ func _process(delta):
 		_move(delta)
 		
 		#Animación
-		_animate()
+		if $AnimationTree.active: 
+			_animate()
 
 #Movimiento
 func _move(delta):
@@ -77,12 +78,22 @@ func _move(delta):
 	
 	velocity.y += delta * GRAVITY
 	
-	velocity.x = _walking_controls() * SPEED
+	var direction = int(Input.is_action_pressed("right_" + str(player_type))) - int(Input.is_action_pressed("left_" + str(player_type)))
+	
+	#Cambio de dirección
+	if direction != 0: 
+		$Body.scale.x = direction
+		if sign(float(size.x)) != direction:
+			size.x *= -1
+	
+	if Input.is_action_just_pressed("ui_accept"): _live_or_die()
+	
+	velocity.x = direction * SPEED
 	
 	#Si está en el suelo se habilita el salto
 	if is_on_floor():
 		velocity.y = 0
-		if _jump_controls():
+		if Input.is_action_pressed("jump_" + str(player_type)):
 			#Impulso hacia arriba
 			velocity.y = -JUMP_SPEED
 			
@@ -99,33 +110,9 @@ func _move(delta):
 	#Aplica la velocidad
 	velocity = move_and_slide_with_snap(velocity, snap, Vector2(0, -1))
 	
-	#Variable auxiliar para el movimiento de la cámara
-	#if direction.x == 0: prev_pos_x = position.x
-
-func _walking_controls():
-	var direction
-	
-	direction = int(Input.is_action_pressed("move_right")) - int(Input.is_action_pressed("move_left"))
-	
-	if opposite:
-		direction = int(Input.is_action_pressed("ui_right")) - int(Input.is_action_pressed("ui_left"))
-	
-	#Cambio de dirección
-	if direction != 0: $Body.scale.x = direction
-	
-	return direction
-
-func _jump_controls():
-	if !opposite:
-		return true if Input.is_action_pressed("jump") else false
-	else:
-		return true if Input.is_action_pressed("ui_up") else false
 
 func _action():
-	if !opposite:
-		return true if Input.is_action_pressed("action") else false
-	else:
-		return true if Input.is_action_pressed("ui_down") else false
+		return true if Input.is_action_pressed("action_" + str(player_type)) else false
 
 #Animación
 func _animate():
@@ -143,6 +130,20 @@ func check_life():
 	health = clamp(health, 0, maxLife)
 	if health == 0:
 		return true
+
+func _live_or_die():
+	dead = !dead
+	
+	for part in body_parts:
+		get_node(part).dead = dead
+		
+	$Body/Head/Element.modulate = Global._color(type, dead)
+	
+	$Body/Tween.set_active(!dead)
+	$AnimationTree.active = !dead
+	
+	if dead: $Body/Head/Face.texture = face_hurt
+	else: $Body/Head/Face.texture = face_normal
 
 func _blink(blink):
 	var _time = TIME_TWEEN / 3
@@ -166,3 +167,4 @@ func _on_Tween_tween_completed(object, key):
 			$Body/Tween.interpolate_property(object, "scale", Vector2(1.15,1.15), _new_scale, TIME_TWEEN, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	
 	$Body/Tween.start()
+
