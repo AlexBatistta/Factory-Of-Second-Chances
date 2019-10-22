@@ -17,9 +17,13 @@ const JUMP_SPEED = 800
 const TIME_TWEEN = 0.4
 
 var velocity = Vector2()
+var direction = Vector2()
 var maxLife = 0
 var snap = Vector2(0, 32)
 var dead : bool = false
+
+var topRiver = 0
+var swimming = false
 
 var state
 var face_blink = load("res://Game/Player/Body-Parts/Face-Blink.png")
@@ -35,12 +39,12 @@ func _set_type(_type):
 
 func _set_player(_player):
 	player_type = _player
-	z_index = player_type * 5
+	z_index = player_type# * 2
 	set_collision_layer_bit(0, bool(!player_type))
 	set_collision_layer_bit(1, bool(player_type))
 
 func _change_color():
-	$Body/Head/Element.texture = load("res://Game/Elements/Element-" + str(type) + ".png")
+	$Body/Head/Element.texture = load("res://Game/Elements/Element" + str(type) + ".png")
 	$Body/Head/Element.modulate = Global._color(type, dead)
 	for part in body_parts:
 		get_node(part).type = type
@@ -65,7 +69,18 @@ func _ready():
 func _process(delta):
 	if !Engine.is_editor_hint():
 		#Movimiento
-		_move(delta)
+		if !dead:
+			direction.x = int(Input.is_action_pressed("right_" + str(player_type))) - int(Input.is_action_pressed("left_" + str(player_type)))
+			direction.y = int(Input.is_action_pressed("down_" + str(player_type))) - int(Input.is_action_pressed("up_" + str(player_type)))
+		
+		if !swimming:
+			_move(delta)
+		else:
+			_swimming(delta)
+		
+		#Aplica la velocidad
+		if dead: velocity.x = 0
+		velocity = move_and_slide_with_snap(velocity, snap, Vector2(0, -1))
 		
 		#Animación
 		if $AnimationTree.active: 
@@ -78,17 +93,7 @@ func _move(delta):
 	
 	velocity.y += delta * GRAVITY
 	
-	var direction = int(Input.is_action_pressed("right_" + str(player_type))) - int(Input.is_action_pressed("left_" + str(player_type)))
-	
-	#Cambio de dirección
-	if direction != 0: 
-		$Body.scale.x = direction
-		if sign(float(size.x)) != direction:
-			size.x *= -1
-	
-	if Input.is_action_just_pressed("ui_accept"): _live_or_die()
-	
-	velocity.x = direction * SPEED
+	velocity.x = direction.x * SPEED
 	
 	#Si está en el suelo se habilita el salto
 	if is_on_floor():
@@ -105,14 +110,37 @@ func _move(delta):
 			#Sonido de salto
 			#$PlayerSounds.stream = load("res://Sound/Jump.ogg")
 			#$PlayerSounds.play()
-	
-	
-	#Aplica la velocidad
-	velocity = move_and_slide_with_snap(velocity, snap, Vector2(0, -1))
-	
+		if Input.is_action_pressed("action_" + str(player_type)):
+			state.travel("Attack")
 
-func _action():
-		return true if Input.is_action_pressed("action_" + str(player_type)) else false
+func _river(_active, _top = 0):
+	swimming = _active
+	topRiver = _top
+	velocity = Vector2()
+	$Body/Shadow.visible = !_active
+
+func _swimming(delta):
+	#Se "despega" del suelo
+	snap = Vector2.ZERO
+	
+	#Por defecto hunde al personaje
+	if direction.y == 0:
+		direction.y = 1
+	
+	#Impulsa hacia abajo si esta cerca de la superficie
+	if direction.y == -1 && position.y < topRiver:
+		direction.y = 1
+	
+	velocity = lerp(velocity, direction * (SPEED / 2), delta * 2)
+	
+	if direction.x == 0:
+		velocity.x = 0
+	
+	#Salida del río, si choca contra una pared y esta cerca de la 
+	#superficie, se lo impulsa a salir
+	if is_on_wall() && position.y < topRiver:
+		velocity.x = SPEED * direction.x
+		velocity.y = -JUMP_SPEED / 2
 
 #Animación
 func _animate():
@@ -124,6 +152,12 @@ func _animate():
 	else:
 		if state.get_current_node() != "Jump Loop":
 			state.travel("Fall")
+	
+	#Cambio de dirección
+	if direction.x != 0: 
+		$Body.scale.x = direction.x
+		if sign(float(size.x)) != direction.x:
+			size.x *= -1
 
 #Comprueba la vida restante
 func check_life():
@@ -131,8 +165,8 @@ func check_life():
 	if health == 0:
 		return true
 
-func _live_or_die():
-	dead = !dead
+func _live_or_die(_dead):
+	dead = _dead
 	
 	for part in body_parts:
 		get_node(part).dead = dead

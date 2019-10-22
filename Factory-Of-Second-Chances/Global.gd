@@ -18,6 +18,8 @@ var music = true
 signal transition
 
 var dual_camera : bool = false
+var cam_size : Vector2 = Vector2(1024 * 1.5, 600 * 1.5)
+var special_disable : bool = false
 
 enum Type {FIRE, ACID, POISON, ELECTRICITY} 
 
@@ -28,7 +30,7 @@ func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
 	Game = load("res://Game/Game.tscn")
-	#Menu = preload("res://Menus/Menus.tscn")
+	Menu = preload("res://Menus/Menu.tscn")
 
 #Cambia la escena 
 func change_scene(_scene):
@@ -41,19 +43,19 @@ func new_scene(_scene):
 	
 	#Instancia la escena
 	if _scene == "Game":
-		#current_scene = Game.instance()
+		current_scene = Game.instance()
 		current_state = "Game"
 		get_tree().paused = false
-	#else:
-	#	current_scene = Menu.instance()
-	#	current_state = "Menus"
+	else:
+		current_scene = Menu.instance()
+		current_state = "Menus"
 	
 	get_tree().get_root().add_child(current_scene)
 	
 	get_tree().set_current_scene(current_scene)
 	
 	#Guarda los datos
-	Data.save_data()
+	#Data.save_data()
 
 #Cambia el nivel actual
 func change_level(_level):

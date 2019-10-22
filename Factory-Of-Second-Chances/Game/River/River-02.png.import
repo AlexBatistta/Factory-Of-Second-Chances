@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Danger.png-7ea2e327aa9a032b483cf6f72b716060.stex"
+path="res://.import/River-02.png-038436b0f7dbdc48155de1af79525707.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Game/Special-Terrain/Danger.png"
-dest_files=[ "res://.import/Danger.png-7ea2e327aa9a032b483cf6f72b716060.stex" ]
+source_file="res://Game/River/River-02.png"
+dest_files=[ "res://.import/River-02.png-038436b0f7dbdc48155de1af79525707.stex" ]
 
 [params]
 

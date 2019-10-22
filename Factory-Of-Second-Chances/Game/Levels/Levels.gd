@@ -2,6 +2,7 @@ tool
 extends Node2D
 
 var newLevel = null
+var limits = Vector2()
 
 #Establece el nivel (útil para la edición)
 export (int, 1, 2) var level = 1 setget load_level
@@ -22,14 +23,11 @@ func change_level():
 	var levelScene = load("res://Game/Levels/Level" + str(level) + ".tscn")
 	newLevel = levelScene.instance()
 	newLevel.visible = true
+	limits = newLevel.get_limits()
 	add_child(newLevel)
 	
 	#Actualiza los límites del fondo según los límites del nivel
 	#$ParallaxBackground.scroll_limit_end = get_limits()
-	
-	#Actualiza los límites de la cámara según los límites del nivel
-	#$Levels/Player/Camera2D.limit_right = get_limits().x
-	#$Levels/Player/Camera2D.limit_bottom = get_limits().y
 
 func _ready():
 	if Engine.is_editor_hint():
@@ -45,7 +43,4 @@ func _ready():
 		#Reproducción de música
 		#if Global.music: $MusicGame.play()
 
-func get_limits():
-	var used = newLevel.get_used_rect()
-	var sizeTile = newLevel.cell_size.x
-	return Vector2 (used.end.x * sizeTile, used.end.y * sizeTile)
+

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Element-2.png-0f8e1c9cd33d14fc5b9fe5e80232ec5b.stex"
+path="res://.import/Fire2.png-cc3a002af068f59abd737808f4b948b0.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Game/Elements/Element-2.png"
-dest_files=[ "res://.import/Element-2.png-0f8e1c9cd33d14fc5b9fe5e80232ec5b.stex" ]
+source_file="res://Game/Special-Terrain/Fire2.png"
+dest_files=[ "res://.import/Fire2.png-cc3a002af068f59abd737808f4b948b0.stex" ]
 
 [params]
 

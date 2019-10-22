@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Puddle.png-866f6247689e1efe0feea2af35ff290d.stex"
+path="res://.import/Element0.png-53d77e18dd85bd1beb1a271053fdba43.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Game/Special-Terrain/Puddle.png"
-dest_files=[ "res://.import/Puddle.png-866f6247689e1efe0feea2af35ff290d.stex" ]
+source_file="res://Game/Elements/Element0.png"
+dest_files=[ "res://.import/Element0.png-53d77e18dd85bd1beb1a271053fdba43.stex" ]
 
 [params]
 
