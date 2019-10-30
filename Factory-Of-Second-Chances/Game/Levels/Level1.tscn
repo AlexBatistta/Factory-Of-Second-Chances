@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Game/Tileset/TileSet.tres" type="TileSet" id=1]
 [ext_resource path="res://Game/Levels/Level.gd" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://Game/River/River.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Game/Switch/Switch.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Game/Exit/Exit.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Game/Box/Box.tscn" type="PackedScene" id=7]
 
 [node name="Level1" type="TileMap"]
 z_index = -3
@@ -29,6 +30,7 @@ type = 1
 
 [node name="Switch" parent="." instance=ExtResource( 5 )]
 position = Vector2( 2624, 1051 )
+type = 1
 
 [node name="Switch2" parent="." instance=ExtResource( 5 )]
 position = Vector2( 8256, 800 )
@@ -36,3 +38,6 @@ position = Vector2( 8256, 800 )
 [node name="Exit" parent="." instance=ExtResource( 6 )]
 position = Vector2( 10752, 800 )
 scale = Vector2( 1.25, 1.25 )
+
+[node name="Box" parent="." instance=ExtResource( 7 )]
+position = Vector2( 1536, 992 )

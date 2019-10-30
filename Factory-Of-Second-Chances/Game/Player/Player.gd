@@ -4,7 +4,7 @@ extends KinematicBody2D
 #Script que controla al personaje del jugador
 
 signal change_life
-signal change_viewport
+signal drag_box
 
 export (Global.Type) var type = Global.Type.FIRE setget _set_type
 export (Array, NodePath) var body_parts
@@ -15,11 +15,13 @@ const GRAVITY = 2000
 const SPEED = 250
 const JUMP_SPEED = 800
 const TIME_TWEEN = 0.4
+const INERTIA = 100
 
 var velocity = Vector2()
 var direction = Vector2()
 var maxLife = 0
 var snap = Vector2(0, 32)
+var drag : bool = false
 var dead : bool = false
 
 var topRiver = 0
@@ -66,7 +68,7 @@ func _ready():
 	
 	randomize()
 
-func _process(delta):
+func _physics_process(delta):
 	if !Engine.is_editor_hint():
 		#Movimiento
 		if !dead:
@@ -80,11 +82,20 @@ func _process(delta):
 		
 		#Aplica la velocidad
 		if dead: velocity.x = 0
-		velocity = move_and_slide_with_snap(velocity, snap, Vector2(0, -1))
+		velocity = move_and_slide_with_snap(velocity, snap, Vector2(0, -1), false, 4, PI / 4, false)
+		
+		if drag:
+			if Input.is_action_just_pressed("action_" + str(player_type)):
+				emit_signal("drag_box")
 		
 		#Animación
 		if $AnimationTree.active: 
 			_animate()
+		
+		for index in get_slide_count():
+			var collision = get_slide_collision(index)
+			if collision.collider.is_in_group("Box"):
+				collision.collider.apply_central_impulse(-collision.normal * INERTIA)
 
 #Movimiento
 func _move(delta):

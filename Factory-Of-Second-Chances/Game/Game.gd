@@ -29,6 +29,16 @@ func _process(delta):
 		if change != Global.dual_camera:
 			Global.dual_camera = change
 			change_viewport()
+		if change && check_update():
+			change_viewport()
+
+func check_update():
+	if new_frame(camera_01, true) != new_frame(player_01):
+		return true
+	if new_frame(camera_02, true) != new_frame(player_02):
+		return true
+	
+	return false
 
 func change_viewport():
 	$CanvasLayer/AnimationPlayer.play("Transition")
@@ -46,13 +56,13 @@ func change_viewport():
 	camera_01.current = Global.dual_camera
 	camera_02.current = Global.dual_camera
 
-func new_frame(player):
+func new_frame(_node, camera = false):
 	var level_limits = $ViewportMain/ViewportMain/Levels.limits
 	var partition_limits = Vector2(level_limits.x / Global.cam_size.x, level_limits.y / Global.cam_size.y).floor()
 	
 	var current = Vector2()
 	
-	var pos = player.global_position
+	var pos = _node.global_position
 	for i in range(partition_limits.x - 1):
 		if pos.x > i * Global.cam_size.x:
 			current.x = i
@@ -60,6 +70,8 @@ func new_frame(player):
 	for j in range(partition_limits.y - 1):
 		if pos.y > j * Global.cam_size.y:
 			current.y = j
+	
+	if camera: current.x += 1
 	
 	return current
 

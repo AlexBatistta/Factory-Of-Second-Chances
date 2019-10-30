@@ -1,11 +1,18 @@
+tool
 extends Area2D
 
 signal exit
 
-export(int, 1, 5) var time_active = 5
+export (int, "Switch", "Button") var type = 0 setget _set_type
+export (int, 1, 5) var time_active = 5
 export (bool) var switch_exit = false 
 
 var _player = null
+
+func _set_type(_type):
+	type = _type
+	$Switch.visible = !bool(type)
+	$Button.visible = bool(type)
 
 func _input(event):
 	if _player != null && !Global.special_disable:
@@ -19,8 +26,9 @@ func _activate_switch():
 	else:
 		emit_signal("exit", true)
 	
-	$AnimationPlayer.play("Switch")
-	$Timer.start(time_active)
+	$AnimationPlayer.play("Switch-" + str(type))
+	if type == 0:
+		$Timer.start(time_active)
 
 func _on_Timer_timeout():
 	if !switch_exit:
@@ -29,12 +37,16 @@ func _on_Timer_timeout():
 	else:
 		emit_signal("exit", false)
 	
-	$AnimationPlayer.play_backwards("Switch")
+	$AnimationPlayer.play_backwards("Switch-" + str(type))
 
 func _on_Switch_body_entered(body):
 	if body.is_in_group("Player"):
 		_player = body
+		if type == 1:
+			_activate_switch()
 
 func _on_Switch_body_exited(body):
 	if body.is_in_group("Player"):
 		_player = null
+		if type == 1:
+			_on_Timer_timeout()
