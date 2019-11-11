@@ -7,14 +7,12 @@ extends Area2D
 export (Global.Type) var type = Global.Type.FIRE
 export (Vector2) var dimensions = Vector2(1, 1) setget change_dimensions
 export var tileSize = 128
-export var offset = 32
+export var offset = Vector2(45, 32)
 
 var rectSprite = Vector2()
 var color
 var backWaves : Sprite
 var frontWaves : Sprite
-
-var _player = null
 
 #Cambia las dimensiones
 func change_dimensions(_dimensions):
@@ -26,6 +24,7 @@ func change_dimensions(_dimensions):
 	if backWaves != null:
 		backWaves.queue_free()
 	backWaves = create_sprite(-3)
+	backWaves.position += Vector2(offset.x, 0)
 	add_child(backWaves)
 	
 	#Crea el sprite del frente y lo agrega a escena
@@ -33,8 +32,8 @@ func change_dimensions(_dimensions):
 		frontWaves.queue_free()
 	frontWaves = create_sprite(5)
 	#Sprite mas bajo que el del fondo
-	frontWaves.region_rect = Rect2(35, 0, rectSprite.x, rectSprite.y - 20)
-	frontWaves.position += Vector2(0, 10)
+	frontWaves.region_rect = Rect2(tileSize / 2, 0, rectSprite.x, rectSprite.y - 20)
+	frontWaves.position += Vector2(offset.x, 10)
 	#Movimiento de las olas
 	frontWaves.material.set_shader_param("speed", 0.2)
 	add_child(frontWaves)
@@ -45,17 +44,17 @@ func change_dimensions(_dimensions):
 #Establece los parámetros según las dimensiones
 func setup():
 	$CollisionShape2D.scale = dimensions
-	$CollisionShape2D.position = Vector2(rectSprite.x / 2, rectSprite.y / 2 + offset)
+	$CollisionShape2D.position = Vector2(rectSprite.x / 2 - offset.x, rectSprite.y / 2 + offset.y)
 	
 	$Bubbles.process_material = load("res://Game/River/ParticlesMaterial.tres").duplicate()
-	$Bubbles.process_material.emission_box_extents = Vector3((tileSize / 2) * dimensions.x, (tileSize / 2) * dimensions.y - offset, 1)
+	$Bubbles.process_material.emission_box_extents = Vector3((tileSize / 2) * dimensions.x, (tileSize / 2) * dimensions.y - offset.y, 1)
 	$Bubbles.position = rectSprite / 2
 	$Bubbles.emitting = true
 
 #Crea el sprite y lo retorna
 func create_sprite(zIndex):
 	#Ancho y largo según la medida del tile y las dimensiones
-	rectSprite = Vector2(tileSize * dimensions.x, tileSize * dimensions.y - offset)
+	rectSprite = Vector2(tileSize * dimensions.x + (offset.x * 2), tileSize * dimensions.y)
 	
 	#Crea el sprite con la textura
 	var sprite = Sprite.new()
@@ -65,7 +64,7 @@ func create_sprite(zIndex):
 	#Establece las medidas
 	sprite.region_enabled = true
 	sprite.region_rect = Rect2(Vector2(0, 0), rectSprite)
-	sprite.set_offset(Vector2((tileSize / 2) * dimensions.x, (tileSize / 2) * dimensions.y + (offset / 2)))
+	sprite.set_offset(Vector2((tileSize / 2) * dimensions.x - offset.x, (tileSize / 2) * dimensions.y + (offset.y / 2)))
 	
 	#Agrega el shader
 	var shader = ShaderMaterial.new()
@@ -100,10 +99,8 @@ func _ready():
 func _on_River_body_entered(body):
 	if body.is_in_group("Player"):
 		#Activa el poder de nadar
-		_player = body
-		_player._river(true, position.y)
-		if _player.type != type && !Global.special_disable:
-			_player._live_or_die(true)
+		body._river(true, position.y)
+		body._live_or_die(type)
 		#Sonido del río
 		#$LiquidSound.play()
 	
@@ -116,14 +113,16 @@ func _on_River_body_exited(body):
 	if body.is_in_group("Player"):
 		#Para el poder de nadar
 		body._river(false)
-		_player = null
 		#Para el sonido
 		#$LiquidSound.stop()
 
 func _disable():
-	if _player != null:
-		_player._live_or_die(!Global.special_disable)
+	var players = get_tree().get_nodes_in_group("Player")
 	if Global.special_disable:
 		set_color(Color.darkturquoise)
+		for player in players:
+			if player.swimming: player._live_or_die(-1)
 	else:
 		set_color(Global._color(type, false, false))
+		for player in players:
+			if player.swimming: player._live_or_die(type)

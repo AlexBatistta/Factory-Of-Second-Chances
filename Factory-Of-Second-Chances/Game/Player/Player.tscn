@@ -48,8 +48,8 @@ hframes = 3
 script = ExtResource( 3 )
 
 [node name="Head" type="Sprite" parent="Body"]
-position = Vector2( 12.59, 1.96638 )
-rotation = -0.0866796
+position = Vector2( 12.59, 1.32643 )
+rotation = -0.0755104
 texture = ExtResource( 4 )
 centered = false
 offset = Vector2( -155, -210 )
@@ -59,7 +59,7 @@ script = ExtResource( 3 )
 [node name="Element" type="Sprite" parent="Body/Head"]
 modulate = Color( 1, 0, 0, 1 )
 position = Vector2( 11.2381, -123.354 )
-scale = Vector2( 0.880427, 0.880427 )
+scale = Vector2( 1.00703, 1.00703 )
 texture = ExtResource( 5 )
 offset = Vector2( -2.032, -26.5415 )
 
@@ -77,7 +77,7 @@ __meta__ = {
 
 [node name="LeftArm" type="Sprite" parent="Body"]
 position = Vector2( -32.465, 3 )
-rotation = 0.240238
+rotation = 0.162054
 z_index = 1
 texture = ExtResource( 7 )
 centered = false
@@ -87,7 +87,7 @@ script = ExtResource( 3 )
 
 [node name="RightArm" type="Sprite" parent="Body"]
 position = Vector2( 31.634, 3 )
-rotation = -0.291318
+rotation = -0.255165
 z_index = -1
 texture = ExtResource( 8 )
 centered = false
@@ -96,7 +96,7 @@ hframes = 2
 script = ExtResource( 3 )
 
 [node name="LeftLeg" type="Sprite" parent="Body"]
-position = Vector2( -17.0042, 54 )
+position = Vector2( -16.6842, 54 )
 z_index = -1
 texture = ExtResource( 9 )
 centered = false
@@ -106,7 +106,7 @@ script = ExtResource( 3 )
 
 [node name="RightLeg" type="Sprite" parent="Body"]
 modulate = Color( 0.709804, 0.709804, 0.709804, 1 )
-position = Vector2( 22.3442, 54 )
+position = Vector2( 22.0242, 54 )
 z_index = -1
 texture = ExtResource( 10 )
 centered = false
@@ -117,7 +117,7 @@ script = ExtResource( 3 )
 [node name="Shadow" type="Sprite" parent="Body"]
 modulate = Color( 0, 0, 0, 0.509804 )
 position = Vector2( 2, 85 )
-scale = Vector2( 1.46157, 1 )
+scale = Vector2( 1.31621, 1 )
 z_index = -2
 texture = ExtResource( 11 )
 

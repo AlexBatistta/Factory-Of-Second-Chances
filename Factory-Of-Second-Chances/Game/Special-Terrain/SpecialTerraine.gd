@@ -39,13 +39,11 @@ func _disable():
 
 func _on_SpecialTerrain_body_entered(body):
 	if body.is_in_group("Player"):
-		if body.type != type:
-			body._live_or_die(true)
+		body._live_or_die(type)
 
 func _on_SpecialTerrain_body_exited(body):
 	if body.is_in_group("Player"):
-		if body.type != type:
-			body._live_or_die(false)
+		body._live_or_die(-1)
 
 func _on_Animation_animation_finished(anim_name):
 	if anim_name == current_name + "_disable":

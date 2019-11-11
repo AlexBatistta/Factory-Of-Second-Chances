@@ -42,11 +42,11 @@ func _on_Timer_timeout():
 func _on_Switch_body_entered(body):
 	if body.is_in_group("Player"):
 		_player = body
-		if type == 1:
-			_activate_switch()
+	if type == 1:
+		_activate_switch()
 
 func _on_Switch_body_exited(body):
 	if body.is_in_group("Player"):
 		_player = null
-		if type == 1:
-			_on_Timer_timeout()
+	if type == 1:
+		_on_Timer_timeout()

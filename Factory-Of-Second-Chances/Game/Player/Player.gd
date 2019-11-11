@@ -11,9 +11,9 @@ export (Array, NodePath) var body_parts
 export var health = 5
 export (int, "PLAYER_1", "PLAYER_2") var player_type = 0 setget _set_player
 
-const GRAVITY = 2000
-const SPEED = 250
-const JUMP_SPEED = 800
+const GRAVITY = 3000
+const SPEED = 300
+const JUMP_SPEED = 1000
 const TIME_TWEEN = 0.4
 const INERTIA = 100
 
@@ -107,7 +107,7 @@ func _move(delta):
 	velocity.x = direction.x * SPEED
 	
 	#Si está en el suelo se habilita el salto
-	if is_on_floor():
+	if is_on_floor() && !dead:
 		velocity.y = 0
 		if Input.is_action_pressed("jump_" + str(player_type)):
 			#Impulso hacia arriba
@@ -176,8 +176,9 @@ func check_life():
 	if health == 0:
 		return true
 
-func _live_or_die(_dead):
-	dead = _dead
+func _live_or_die(_type):
+	dead = true if _type != type else false
+	if _type == -1: dead = false
 	
 	for part in body_parts:
 		get_node(part).dead = dead
@@ -197,7 +198,7 @@ func _blink(blink):
 		$Body/Head/Face.texture = face_blink
 	else:
 		$Body/Head/Face.texture = face_normal
-		_time = ceil(rand_range(5, 10))
+		_time = ceil(rand_range(2, 8))
 	
 	$Body/Tween.interpolate_callback(self, _time, "_blink", !blink)
 	$Body/Tween.start()
