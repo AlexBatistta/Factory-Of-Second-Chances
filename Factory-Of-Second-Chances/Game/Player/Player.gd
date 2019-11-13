@@ -3,7 +3,7 @@ extends KinematicBody2D
 
 #Script que controla al personaje del jugador
 
-signal change_life
+signal die_retry
 signal drag_box
 
 export (Global.Type) var type = Global.Type.FIRE setget _set_type
@@ -27,7 +27,8 @@ var dead : bool = false
 var topRiver = 0
 var swimming = false
 
-var state
+var playback
+var state = "Idle"
 var face_blink = load("res://Game/Player/Body-Parts/Face-Blink.png")
 var face_normal = load("res://Game/Player/Body-Parts/Face-Normal.png")
 var face_hurt = load("res://Game/Player/Body-Parts/Face-Hurt.png")
@@ -52,16 +53,12 @@ func _change_color():
 		get_node(part).type = type
 
 func _ready():
-	if !Engine.is_editor_hint():
-		$AnimationTree.active = true
-	else:
-		$AnimationPlayer.play("Idle")
-	
 	$Body/Tween.interpolate_property($Body/Head/Element, "scale", Vector2(1.15, 1.15), Vector2(0.85, 0.85), TIME_TWEEN, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	$Body/Tween.interpolate_callback(self, TIME_TWEEN / 2, "_blink", false)
 	$Body/Tween.start()
 	
-	state = $AnimationTree.get("parameters/playback")
+	playback = $AnimationTree.get("parameters/playback")
+	#playback.travel(state)
 	
 	maxLife = health
 	_change_color()
@@ -81,7 +78,7 @@ func _physics_process(delta):
 			_swimming(delta)
 		
 		#Aplica la velocidad
-		if dead: velocity.x = 0
+		if dead || playback.get_current_node() == "Action": velocity.x = 0
 		velocity = move_and_slide_with_snap(velocity, snap, Vector2(0, -1), false, 4, PI / 4, false)
 		
 		if drag:
@@ -116,13 +113,13 @@ func _move(delta):
 			#Se "despega" del suelo
 			snap = Vector2.ZERO
 			
-			state.travel("Jump")
+			state = "Jump"
 			
 			#Sonido de salto
 			#$PlayerSounds.stream = load("res://Sound/Jump.ogg")
 			#$PlayerSounds.play()
-		if Input.is_action_pressed("action_" + str(player_type)):
-			state.travel("Attack")
+		if Input.is_action_just_pressed("action_" + str(player_type)):
+			state = "Action"
 
 func _river(_active, _top = 0):
 	swimming = _active
@@ -151,30 +148,28 @@ func _swimming(delta):
 	#superficie, se lo impulsa a salir
 	if is_on_wall() && position.y < topRiver:
 		velocity.x = SPEED * direction.x
-		velocity.y = -JUMP_SPEED / 2
+		velocity.y = -JUMP_SPEED * 0.75
 
 #Animación
 func _animate():
-	if is_on_floor():
-		if velocity.x != 0:
-			state.travel("Walk")
+	if state == "":
+		if is_on_floor():
+			if velocity.x != 0:
+				state = "Walk"
+			else:
+				state = "Idle"
 		else:
-			state.travel("Idle")
-	else:
-		if state.get_current_node() != "Jump Loop":
-			state.travel("Fall")
+			if playback.get_current_node() != "Jump Loop":
+				state =  "Fall"
+	
+	playback.travel(state)
+	state = ""
 	
 	#Cambio de dirección
 	if direction.x != 0: 
 		$Body.scale.x = direction.x
 		if sign(float(size.x)) != direction.x:
 			size.x *= -1
-
-#Comprueba la vida restante
-func check_life():
-	health = clamp(health, 0, maxLife)
-	if health == 0:
-		return true
 
 func _live_or_die(_type):
 	dead = true if _type != type else false
@@ -188,8 +183,11 @@ func _live_or_die(_type):
 	$Body/Tween.set_active(!dead)
 	$AnimationTree.active = !dead
 	
-	if dead: $Body/Head/Face.texture = face_hurt
-	else: $Body/Head/Face.texture = face_normal
+	if dead: 
+		$Body/Head/Face.texture = face_hurt
+		emit_signal("die_retry")
+	else: 
+		$Body/Head/Face.texture = face_normal
 
 func _blink(blink):
 	var _time = TIME_TWEEN / 3

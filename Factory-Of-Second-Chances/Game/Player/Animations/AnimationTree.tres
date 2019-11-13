@@ -1,60 +1,77 @@
-[gd_resource type="AnimationNodeStateMachine" load_steps=17 format=2]
+[gd_resource type="AnimationNodeStateMachine" load_steps=22 format=2]
 
 [sub_resource type="AnimationNodeAnimation" id=1]
-animation = "Jump Transition"
+animation = "Action"
 
 [sub_resource type="AnimationNodeAnimation" id=2]
-animation = "Idle"
+animation = "Jump Transition"
 
 [sub_resource type="AnimationNodeAnimation" id=3]
-animation = "Jump Loop"
+animation = "Idle"
 
 [sub_resource type="AnimationNodeAnimation" id=4]
-animation = "Jump"
+animation = "Jump Loop"
 
 [sub_resource type="AnimationNodeAnimation" id=5]
-animation = "Walk"
+animation = "Jump"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id=6]
+[sub_resource type="AnimationNodeAnimation" id=6]
+animation = "Walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=7]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=8]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=9]
-switch_mode = 2
-priority = 3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=10]
+switch_mode = 2
+priority = 3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=11]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=12]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=13]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=14]
 switch_mode = 2
 auto_advance = true
 
-[sub_resource type="AnimationNodeStateMachineTransition" id=14]
-
 [sub_resource type="AnimationNodeStateMachineTransition" id=15]
-switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=16]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=17]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=18]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=19]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=20]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=21]
 switch_mode = 2
 auto_advance = true
 
 [resource]
-states/Fall/node = SubResource( 1 )
+states/Action/node = SubResource( 1 )
+states/Action/position = Vector2( 817, 151 )
+states/Fall/node = SubResource( 2 )
 states/Fall/position = Vector2( 419, 56 )
-states/Idle/node = SubResource( 2 )
+states/Idle/node = SubResource( 3 )
 states/Idle/position = Vector2( 636, 151 )
-states/Jump/node = SubResource( 4 )
+states/Jump/node = SubResource( 5 )
 states/Jump/position = Vector2( 636, -35 )
-"states/Jump Loop/node" = SubResource( 3 )
+"states/Jump Loop/node" = SubResource( 4 )
 "states/Jump Loop/position" = Vector2( 419, -35 )
-states/Walk/node = SubResource( 5 )
+states/Walk/node = SubResource( 6 )
 states/Walk/position = Vector2( 817, 56 )
-transitions = [ "Idle", "Walk", SubResource( 6 ), "Walk", "Idle", SubResource( 7 ), "Idle", "Fall", SubResource( 8 ), "Fall", "Idle", SubResource( 9 ), "Fall", "Walk", SubResource( 10 ), "Walk", "Fall", SubResource( 11 ), "Jump Loop", "Fall", SubResource( 12 ), "Jump", "Jump Loop", SubResource( 13 ), "Idle", "Jump", SubResource( 14 ), "Jump", "Fall", SubResource( 15 ), "Fall", "Jump Loop", SubResource( 16 ) ]
+transitions = [ "Idle", "Walk", SubResource( 7 ), "Walk", "Idle", SubResource( 8 ), "Idle", "Fall", SubResource( 9 ), "Fall", "Idle", SubResource( 10 ), "Fall", "Walk", SubResource( 11 ), "Walk", "Fall", SubResource( 12 ), "Jump Loop", "Fall", SubResource( 13 ), "Jump", "Jump Loop", SubResource( 14 ), "Idle", "Jump", SubResource( 15 ), "Jump", "Fall", SubResource( 16 ), "Fall", "Jump Loop", SubResource( 17 ), "Walk", "Action", SubResource( 18 ), "Idle", "Action", SubResource( 19 ), "Action", "Idle", SubResource( 20 ), "Action", "Walk", SubResource( 21 ) ]
 start_node = "Idle"
-graph_offset = Vector2( 64, -86 )
+graph_offset = Vector2( 98, -129 )

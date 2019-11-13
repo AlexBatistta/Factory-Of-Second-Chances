@@ -35,8 +35,6 @@ func get_limits():
 	return Vector2 (used.end.x * sizeTile, used.end.y * sizeTile)
 
 func _ready():
-	get_tree().get_root().connect("size_changed", self, "_on_Screen_resized")
-	
 	if Engine.is_editor_hint():
 		load_level(1)
 	else:
@@ -46,10 +44,21 @@ func _ready():
 		
 		camera.limit_right = get_limits().x
 		camera.limit_bottom = get_limits().y
+		
+		$Player.connect("die_retry", self, "_retry")
+		$Player2.connect("die_retry", self, "_retry")
+
+func _input(event):
+	if $CanvasLayer/CenterContainer/Button.visible:
+		if event.is_action_pressed("ui_accept"):
+			_on_Button_pressed()
 	
-	_on_Screen_resized()
+	if event.is_action_pressed("ui_cancel"):
+		get_tree().quit()
 
+func _retry():
+	if $Player.dead && $Player2.dead:
+		$CanvasLayer/CenterContainer/Button.visible = true
 
-func _on_Screen_resized():
-	Global.cam_size = get_viewport_rect().size * camera.zoom
-
+func _on_Button_pressed():
+	Global.try_again()

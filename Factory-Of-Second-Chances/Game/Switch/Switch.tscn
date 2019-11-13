@@ -50,7 +50,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id=3]
 resource_name = "Switch-1"
-length = 0.3
+length = 0.1
 step = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("Button:visible")
@@ -71,7 +71,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.15 ),
+"times": PoolRealArray( 0, 0.05 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 0, 1 ]
@@ -95,7 +95,6 @@ offset = Vector2( 0, -90 )
 position = Vector2( 0, -135 )
 texture = ExtResource( 3 )
 hframes = 2
-frame = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Switch-0 = SubResource( 2 )
@@ -109,6 +108,5 @@ visible = false
 texture = ExtResource( 4 )
 offset = Vector2( 0, 11 )
 hframes = 2
-[connection signal="body_entered" from="." to="." method="_on_Switch_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_Switch_body_exited"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

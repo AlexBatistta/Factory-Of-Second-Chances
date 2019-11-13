@@ -13,6 +13,7 @@ var rectSprite = Vector2()
 var color
 var backWaves : Sprite
 var frontWaves : Sprite
+var current_type = type
 
 #Cambia las dimensiones
 func change_dimensions(_dimensions):
@@ -99,8 +100,8 @@ func _ready():
 func _on_River_body_entered(body):
 	if body.is_in_group("Player"):
 		#Activa el poder de nadar
-		body._river(true, position.y)
-		body._live_or_die(type)
+		body._river(true, position.y - offset.y + 10)
+		body._live_or_die(current_type)
 		#Sonido del río
 		#$LiquidSound.play()
 	
@@ -117,12 +118,12 @@ func _on_River_body_exited(body):
 		#$LiquidSound.stop()
 
 func _disable():
-	var players = get_tree().get_nodes_in_group("Player")
 	if Global.special_disable:
 		set_color(Color.darkturquoise)
-		for player in players:
-			if player.swimming: player._live_or_die(-1)
+		current_type = -1
 	else:
 		set_color(Global._color(type, false, false))
-		for player in players:
-			if player.swimming: player._live_or_die(type)
+		current_type = type
+	
+	for player in get_tree().get_nodes_in_group("Player"):
+		if player.swimming: player._live_or_die(current_type)

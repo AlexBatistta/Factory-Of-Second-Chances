@@ -18,7 +18,6 @@ var music = true
 signal transition
 
 var dual_camera : bool = false
-var cam_size : Vector2 = Vector2(1024 * 1.5, 600 * 1.5)
 var special_disable : bool = false
 
 enum Type {FIRE, ACID, POISON, ELECTRICITY} 
