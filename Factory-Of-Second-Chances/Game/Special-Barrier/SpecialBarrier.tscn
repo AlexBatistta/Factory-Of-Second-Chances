@@ -1,0 +1,949 @@
+[gd_scene load_steps=25 format=2]
+
+[ext_resource path="res://Game/Special-Barrier/SpecialBarrier.gd" type="Script" id=1]
+[ext_resource path="res://Game/Special-Barrier/SpecialBarrier-01B.png" type="Texture" id=2]
+[ext_resource path="res://Game/Special-Barrier/DissolveShader.tres" type="Material" id=3]
+[ext_resource path="res://Game/Special-Barrier/SpecialBarrier-01.png" type="Texture" id=4]
+[ext_resource path="res://Game/Special-Barrier/Acid-01.png" type="Texture" id=5]
+[ext_resource path="res://Game/Special-Barrier/Poison-02.png" type="Texture" id=6]
+[ext_resource path="res://Game/Special-Barrier/Poison-01.png" type="Texture" id=7]
+[ext_resource path="res://Game/Special-Barrier/Electricity-01.png" type="Texture" id=8]
+[ext_resource path="res://Game/Special-Barrier/Electricity-02.png" type="Texture" id=9]
+[ext_resource path="res://Game/Special-Barrier/Particles.tres" type="Material" id=10]
+[ext_resource path="res://Game/Elements/Particle-01.png" type="Texture" id=11]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform sampler2D gradient_texture : hint_albedo;
+uniform float dissolve : hint_range(0, 1);
+uniform float rotation : hint_range(0, 3.14);
+uniform vec2 pivot;
+
+vec2 rotateUV(vec2 uv) {
+    float sine = sin(rotation);
+    float cosine = cos(rotation);
+
+    uv -= pivot;
+    uv.x = uv.x * cosine - uv.y * sine;
+    uv.y = uv.x * sine + uv.y * cosine;
+    uv += pivot;
+
+    return uv;
+}
+
+void fragment(){
+	vec4 main_texture = texture(TEXTURE, UV); 
+	vec4 gradient = texture(gradient_texture, rotateUV(UV));
+	
+	main_texture.a *= floor(dissolve + min(0.99, gradient.x));
+	COLOR = main_texture;
+}"
+
+[sub_resource type="Gradient" id=2]
+offsets = PoolRealArray( 0, 0.5, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture" id=3]
+gradient = SubResource( 2 )
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = SubResource( 1 )
+shader_param/dissolve = 1.0
+shader_param/rotation = 1.0
+shader_param/pivot = Vector2( 0.75, 0.5 )
+shader_param/gradient_texture = SubResource( 3 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 75, 100 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 250, 125 )
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 60, 70 )
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 64, 23 )
+
+[sub_resource type="Animation" id=9]
+tracks/0/type = "value"
+tracks/0/path = NodePath("Particles02:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -5, -55 ), Vector2( 95, -430 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Particles01:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -15, -165 ), Vector2( -110, -435 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Particles01:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Particles02:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Particles01:emitting")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, true ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Particles02:emitting")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, true ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("..:enabled")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("../ACID/CollisionPolygon2D:disabled")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("Particles01:process_material:emission_box_extents")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 100, 100, 1 ) ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("Particles02:process_material:emission_box_extents")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 100, 100, 1 ) ]
+}
+
+[sub_resource type="Animation" id=10]
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("../ELECTRICITY/Steps/Step-03/Electricity-02:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.25, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("../ELECTRICITY/Steps/Step-01/Electricity-02:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.25, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("../ELECTRICITY/Steps/Step-02/Electricity-02:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.25, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2 ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("../ELECTRICITY/Steps/Step-04/Electricity-02:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.25, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("../ELECTRICITY/Steps:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 0.529412, 0.529412, 0.529412, 1 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("../ELECTRICITY/Steps/Step-01/CollisionShape2D:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("../ELECTRICITY/Steps/Step-02/CollisionShape2D:disabled")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("../ELECTRICITY/Steps/Step-03/CollisionShape2D:disabled")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("../ELECTRICITY/Steps/Step-04/CollisionShape2D:disabled")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("Particles01:emitting")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("Particles01:visible")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("Particles01:position")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, -110 ) ]
+}
+tracks/12/type = "value"
+tracks/12/path = NodePath("Particles02:emitting")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/13/type = "value"
+tracks/13/path = NodePath("../ELECTRICITY/CollisionShape2D:disabled")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/keys = {
+"times": PoolRealArray( 0, 0.05 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/14/type = "value"
+tracks/14/path = NodePath("Particles02:visible")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/15/type = "value"
+tracks/15/path = NodePath("Particles01:process_material:emission_box_extents")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 100, 100, 1 ) ]
+}
+
+[sub_resource type="Animation" id=11]
+tracks/0/type = "value"
+tracks/0/path = NodePath("Particles01:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, true ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Particles01:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 68, -243 ), Vector2( 145, -500 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Particles01:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Particles02:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 68, -243 ), Vector2( -3, -32 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Particles02:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Particles02:emitting")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, true ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("..:enabled")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("Particles02:process_material:emission_box_extents")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 100, 100, 1 ) ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("Particles01:process_material:emission_box_extents")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 100, 100, 1 ) ]
+}
+
+[sub_resource type="Animation" id=12]
+tracks/0/type = "value"
+tracks/0/path = NodePath("../POISON/Poison02:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, -40 ), Vector2( 0, -120 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("../POISON/Poison02:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6, 0.8, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ Vector2( 1, 1 ), Vector2( -1, 1 ), Vector2( 1, 1 ), Vector2( -1, 1 ), Vector2( 1, 1 ), Vector2( -1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Particles01:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Particles02:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Particles02:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Particles01:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("Particles01:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( -140, -110 ) ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("Particles02:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 140, -110 ) ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("Particles01:process_material:emission_box_extents")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 200, 200, 1 ) ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("Particles02:process_material:emission_box_extents")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 200, 200, 1 ) ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("../POISON/CollisionShape2D:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("../POISON/Poison/CollisionShape2D:disabled")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=13]
+length = 0.8
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("../POISON/Poison02:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, -120 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("../POISON/Poison02:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ Vector2( 1, 1 ), Vector2( -1, 1 ), Vector2( 1, 1 ), Vector2( -1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Particles02:position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 140, -100 ), Vector2( 140, -250 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Particles01:position")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -140, -250 ), Vector2( -140, -110 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("../POISON/Poison/CollisionShape2D:disabled")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[node name="SpecialBarrier" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="FIRE" type="Area2D" parent="."]
+editor/display_folded = true
+collision_layer = 256
+collision_mask = 128
+
+[node name="RigidBody2D" type="RigidBody2D" parent="FIRE"]
+position = Vector2( 175, -388 )
+collision_layer = 512
+collision_mask = 36
+mode = 2
+gravity_scale = 0.0
+can_sleep = false
+
+[node name="Fire02" type="Sprite" parent="FIRE/RigidBody2D"]
+texture = ExtResource( 2 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="FIRE/RigidBody2D"]
+visible = false
+scale = Vector2( 0.5, 0.5 )
+polygon = PoolVector2Array( -75, 62, 75, 62, 50, -36, -50, -36 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="FIRE"]
+visible = false
+polygon = PoolVector2Array( -10, 0, 140, -500, 155, -500, 0, 0 )
+
+[node name="Fire01" type="Sprite" parent="FIRE"]
+material = ExtResource( 3 )
+position = Vector2( 91, -281 )
+texture = ExtResource( 4 )
+region_rect = Rect2( 101, 0, 185, 575 )
+
+[node name="ACID" type="RigidBody2D" parent="."]
+editor/display_folded = true
+visible = false
+collision_layer = 256
+collision_mask = 128
+mode = 1
+contacts_reported = 8
+contact_monitor = true
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ACID"]
+visible = false
+polygon = PoolVector2Array( -27, 0, -27, -253, -150, -468, 150, -468, 27, -253, 27, 0 )
+
+[node name="Acid01" type="Sprite" parent="ACID"]
+material = SubResource( 4 )
+texture = ExtResource( 5 )
+offset = Vector2( 0, -250 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="POISON" type="Area2D" parent="."]
+visible = false
+collision_layer = 256
+collision_mask = 128
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="POISON"]
+visible = false
+position = Vector2( 0, -115 )
+shape = SubResource( 5 )
+
+[node name="Poison02" type="Sprite" parent="POISON"]
+position = Vector2( 0, -40 )
+texture = ExtResource( 6 )
+offset = Vector2( 0, -43 )
+
+[node name="Poison01" type="Sprite" parent="POISON"]
+texture = ExtResource( 7 )
+offset = Vector2( 0, -118 )
+
+[node name="Poison" type="Area2D" parent="POISON"]
+collision_layer = 512
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="POISON/Poison"]
+visible = false
+position = Vector2( 0, -125 )
+shape = SubResource( 6 )
+disabled = true
+
+[node name="ELECTRICITY" type="Area2D" parent="."]
+editor/display_folded = true
+visible = false
+collision_layer = 256
+collision_mask = 128
+
+[node name="Electricity01" type="Sprite" parent="ELECTRICITY"]
+position = Vector2( 0, -100 )
+texture = ExtResource( 8 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ELECTRICITY"]
+visible = false
+position = Vector2( -5, -110 )
+shape = SubResource( 7 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Steps" type="Node2D" parent="ELECTRICITY"]
+editor/display_folded = true
+modulate = Color( 0.529412, 0.529412, 0.529412, 1 )
+
+[node name="Step-01" type="StaticBody2D" parent="ELECTRICITY/Steps"]
+editor/display_folded = true
+position = Vector2( 256, -128 )
+collision_layer = 512
+collision_mask = 3
+
+[node name="Electricity-02" type="Sprite" parent="ELECTRICITY/Steps/Step-01"]
+texture = ExtResource( 9 )
+hframes = 3
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ELECTRICITY/Steps/Step-01"]
+visible = false
+position = Vector2( 0, 5 )
+shape = SubResource( 8 )
+disabled = true
+one_way_collision = true
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Step-02" type="StaticBody2D" parent="ELECTRICITY/Steps"]
+editor/display_folded = true
+position = Vector2( 512, -256 )
+collision_layer = 512
+collision_mask = 3
+
+[node name="Electricity-02" type="Sprite" parent="ELECTRICITY/Steps/Step-02"]
+texture = ExtResource( 9 )
+hframes = 3
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ELECTRICITY/Steps/Step-02"]
+visible = false
+position = Vector2( 0, 5 )
+shape = SubResource( 8 )
+disabled = true
+one_way_collision = true
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Step-03" type="StaticBody2D" parent="ELECTRICITY/Steps"]
+editor/display_folded = true
+position = Vector2( 256, -384 )
+collision_layer = 512
+collision_mask = 3
+
+[node name="Electricity-02" type="Sprite" parent="ELECTRICITY/Steps/Step-03"]
+texture = ExtResource( 9 )
+hframes = 3
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ELECTRICITY/Steps/Step-03"]
+visible = false
+position = Vector2( 0, 5 )
+shape = SubResource( 8 )
+disabled = true
+one_way_collision = true
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Step-04" type="StaticBody2D" parent="ELECTRICITY/Steps"]
+editor/display_folded = true
+position = Vector2( 512, -512 )
+collision_layer = 512
+collision_mask = 3
+
+[node name="Electricity-02" type="Sprite" parent="ELECTRICITY/Steps/Step-04"]
+texture = ExtResource( 9 )
+hframes = 3
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ELECTRICITY/Steps/Step-04"]
+visible = false
+position = Vector2( 0, 5 )
+shape = SubResource( 8 )
+disabled = true
+one_way_collision = true
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Nodes" type="Node2D" parent="."]
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Animation" type="AnimationPlayer" parent="Nodes"]
+anims/ACID = SubResource( 9 )
+anims/ELECTRICITY = SubResource( 10 )
+anims/FIRE = SubResource( 11 )
+anims/POISON = SubResource( 12 )
+anims/PoisonLoop = SubResource( 13 )
+
+[node name="Particles01" type="Particles2D" parent="Nodes"]
+visible = false
+modulate = Color( 1, 0, 0, 1 )
+position = Vector2( -140, -110 )
+rotation = 0.296706
+scale = Vector2( 0.4, 0.4 )
+emitting = false
+amount = 15
+speed_scale = 3.0
+visibility_rect = Rect2( -99.9969, -89.2699, 193.527, 186.764 )
+process_material = ExtResource( 10 )
+texture = ExtResource( 11 )
+
+[node name="Particles02" type="Particles2D" parent="Nodes"]
+visible = false
+modulate = Color( 1, 0, 0, 1 )
+position = Vector2( 140, -110 )
+rotation = 0.296706
+scale = Vector2( 0.4, 0.4 )
+emitting = false
+amount = 15
+speed_scale = 3.0
+visibility_rect = Rect2( -99.9969, -89.2699, 193.527, 186.764 )
+process_material = ExtResource( 10 )
+texture = ExtResource( 11 )
+
+[node name="Timer" type="Timer" parent="Nodes"]
+one_shot = true
+[connection signal="body_entered" from="POISON/Poison" to="." method="_on_Poison_body_entered"]
+[connection signal="animation_finished" from="Nodes/Animation" to="." method="_on_Animation_animation_finished"]
+[connection signal="timeout" from="Nodes/Timer" to="." method="_on_Timer_timeout"]

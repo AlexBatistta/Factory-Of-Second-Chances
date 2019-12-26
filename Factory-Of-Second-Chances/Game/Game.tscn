@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Game/Game.gd" type="Script" id=1]
 [ext_resource path="res://Menus/SedgwickAveDisplay-Regular.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://Game/Player/Player.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Game/Background.png" type="Texture" id=4]
+[ext_resource path="res://Game/Camera/Camera.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Background/Background.png" type="Texture" id=4]
+[ext_resource path="res://Background/Blur.shader" type="Shader" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 50
@@ -23,22 +24,27 @@ tracks/0/keys = {
 "values": [ Color( 0, 0, 0, 1 ), Color( 0, 0, 0, 1 ), Color( 0, 0, 0, 0 ) ]
 }
 
+[sub_resource type="ShaderMaterial" id=3]
+shader = ExtResource( 5 )
+shader_param/amount = 0.75
+
 [node name="Game" type="Node2D"]
 scale = Vector2( 0.5, 0.5 )
 script = ExtResource( 1 )
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="Layer01" type="CanvasLayer" parent="."]
 
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+[node name="ColorRect" type="ColorRect" parent="Layer01"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0, 0, 0, 0 )
 
-[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
+[node name="CenterContainer" type="CenterContainer" parent="Layer01"]
+editor/display_folded = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="Button" type="Button" parent="CanvasLayer/CenterContainer"]
+[node name="Button" type="Button" parent="Layer01/CenterContainer"]
 visible = false
 margin_left = 810.0
 margin_top = 490.0
@@ -49,30 +55,18 @@ rect_pivot_offset = Vector2( 150, 50 )
 custom_fonts/font = SubResource( 1 )
 text = "RETRY"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Layer01"]
 anims/Transition = SubResource( 2 )
 
-[node name="Camera" type="Camera2D" parent="."]
+[node name="Camera" parent="." instance=ExtResource( 3 )]
 current = true
 limit_left = 0
 limit_top = 0
-editor_draw_limits = true
 
-[node name="Player" parent="." instance=ExtResource( 3 )]
-position = Vector2( 384, 901.5 )
-
-[node name="Player2" parent="." instance=ExtResource( 3 )]
-position = Vector2( 1088, 924 )
-z_index = 1
-collision_layer = 2147483650
-type = 1
-player_type = 1
-
-[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+[node name="Layer02" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer2"]
-modulate = Color( 0.94902, 0.94902, 0.94902, 1 )
+[node name="Background" type="TextureRect" parent="Layer02"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -87,4 +81,22 @@ stretch_mode = 6
 __meta__ = {
 "_edit_lock_": true
 }
-[connection signal="pressed" from="CanvasLayer/CenterContainer/Button" to="." method="_on_Button_pressed"]
+
+[node name="Blur" type="TextureRect" parent="Layer02"]
+modulate = Color( 0.94902, 0.94902, 0.94902, 1 )
+material = SubResource( 3 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -1000.0
+margin_top = -550.0
+margin_right = 1000.0
+margin_bottom = 550.0
+rect_min_size = Vector2( 2000, 1100 )
+texture = ExtResource( 4 )
+stretch_mode = 6
+__meta__ = {
+"_edit_lock_": true
+}
+[connection signal="pressed" from="Layer01/CenterContainer/Button" to="." method="_on_Button_pressed"]

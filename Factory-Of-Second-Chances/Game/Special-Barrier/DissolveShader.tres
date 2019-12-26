@@ -1,0 +1,43 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform sampler2D gradient_texture : hint_albedo;
+uniform float dissolve : hint_range(0, 1);
+uniform float rotation : hint_range(0, 3.14);
+uniform vec2 pivot;
+
+vec2 rotateUV(vec2 uv) {
+    float sine = sin(rotation);
+    float cosine = cos(rotation);
+
+    uv -= pivot;
+    uv.x = uv.x * cosine - uv.y * sine;
+    uv.y = uv.x * sine + uv.y * cosine;
+    uv += pivot;
+
+    return uv;
+}
+
+void fragment(){
+	vec4 main_texture = texture(TEXTURE, UV); 
+	vec4 gradient = texture(gradient_texture, rotateUV(UV));
+	
+	main_texture.a *= floor(dissolve + min(0.99, gradient.x));
+	COLOR = main_texture;
+}"
+
+[sub_resource type="Gradient" id=2]
+offsets = PoolRealArray( 0, 0.5, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture" id=3]
+gradient = SubResource( 2 )
+
+[resource]
+shader = SubResource( 1 )
+shader_param/dissolve = 1.0
+shader_param/rotation = 0.75
+shader_param/pivot = Vector2( 0.5, 0.65 )
+shader_param/gradient_texture = SubResource( 3 )

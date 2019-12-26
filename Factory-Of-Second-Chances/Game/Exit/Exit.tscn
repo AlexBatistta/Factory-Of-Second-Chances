@@ -33,6 +33,18 @@ tracks/1/keys = {
 "update": 0,
 "values": [ Vector2( 0.5, -410 ), Vector2( 0.5, -315 ) ]
 }
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:open")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
 
 [node name="Exit" type="Area2D"]
 collision_layer = 64
@@ -61,10 +73,10 @@ shape = SubResource( 1 )
 anims/Exit = SubResource( 2 )
 
 [node name="Switch" parent="." instance=ExtResource( 3 )]
-position = Vector2( -320, -10 )
+position = Vector2( -320, 0 )
 switch_exit = true
 
 [node name="Switch2" parent="." instance=ExtResource( 3 )]
-position = Vector2( 320, -10 )
+position = Vector2( 320, 0 )
 switch_exit = true
 [connection signal="body_entered" from="." to="." method="_on_Exit_body_entered"]

@@ -3,7 +3,9 @@
 [ext_resource path="res://Game/Tileset/TileSet.tres" type="TileSet" id=1]
 [ext_resource path="res://Game/Levels/Level.gd" type="Script" id=2]
 
-[node name="Level2" type="TileMap"]
+[node name="Level2" type="TileMap" groups=[
+"Level",
+]]
 z_index = -2
 tile_set = ExtResource( 1 )
 cell_size = Vector2( 128, 128 )

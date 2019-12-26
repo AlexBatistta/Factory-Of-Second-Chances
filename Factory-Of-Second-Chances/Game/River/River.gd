@@ -4,16 +4,25 @@ extends Area2D
 #Script encargado de la creación de ríos de diferentes tipos, estableciendo
 #el daño que produce al jugador y las dimensiones de los sprites
 
-export (Global.Type) var type = Global.Type.FIRE
+export (Global.Type) var type = Global.Type.FIRE setget change_type
 export (Vector2) var dimensions = Vector2(1, 1) setget change_dimensions
 export var tileSize = 128
-export var offset = Vector2(45, 32)
+export var offset = Vector2(45, 45)
 
 var rectSprite = Vector2()
 var color
 var backWaves : Sprite
 var frontWaves : Sprite
 var current_type = type
+
+#Cambia el tipo
+func change_type(_type):
+	type = _type
+	
+	$Sign/Element.texture = load("res://Game/Elements/Element-0" + str(type + 1) + ".png")
+	if type == Global.Type.ACID: $Sign/Element.position.y = -76
+	else: $Sign/Element.position.y = -64
+	set_color(Global._color(type, false, false))
 
 #Cambia las dimensiones
 func change_dimensions(_dimensions):
@@ -45,7 +54,7 @@ func change_dimensions(_dimensions):
 #Establece los parámetros según las dimensiones
 func setup():
 	$CollisionShape2D.scale = dimensions
-	$CollisionShape2D.position = Vector2(rectSprite.x / 2 - offset.x, rectSprite.y / 2 + offset.y)
+	$CollisionShape2D.position = Vector2(rectSprite.x / 2 - offset.x, rectSprite.y / 2 + offset.y + 10)
 	
 	$Bubbles.process_material = load("res://Game/River/ParticlesMaterial.tres").duplicate()
 	$Bubbles.process_material.emission_box_extents = Vector3((tileSize / 2) * dimensions.x, (tileSize / 2) * dimensions.y - offset.y, 1)
@@ -65,7 +74,7 @@ func create_sprite(zIndex):
 	#Establece las medidas
 	sprite.region_enabled = true
 	sprite.region_rect = Rect2(Vector2(0, 0), rectSprite)
-	sprite.set_offset(Vector2((tileSize / 2) * dimensions.x - offset.x, (tileSize / 2) * dimensions.y + (offset.y / 2)))
+	sprite.set_offset(Vector2((tileSize / 2) * dimensions.x - offset.x, (tileSize / 2) * dimensions.y + offset.y))
 	
 	#Agrega el shader
 	var shader = ShaderMaterial.new()
@@ -89,9 +98,6 @@ func set_color(color):
 	
 	#Color de las burbujas (partículas)
 	$Bubbles.modulate = color
-	
-	$Sign/Element.texture = load("res://Game/Elements/Element" + str(type) + ".png")
-	#$Sign/Element.modulate = color
 
 func _ready():
 	setup()
@@ -100,7 +106,7 @@ func _ready():
 func _on_River_body_entered(body):
 	if body.is_in_group("Player"):
 		#Activa el poder de nadar
-		body._river(true, position.y - offset.y + 10)
+		body._river(true, position.y + offset.y)
 		body._live_or_die(current_type)
 		#Sonido del río
 		#$LiquidSound.play()

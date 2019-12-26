@@ -1,22 +1,23 @@
 extends Area2D
 
-var exit = false
-var change_level = false
+var exit = [false, false]
+export var open = false
 
 func _ready():
 	$Switch.connect("exit", self, "_active")
 	$Switch2.connect("exit", self, "_active")
 
-func _active(_active):
-	if _active:
-		if !exit: exit = true
-		else:
-			$AnimationPlayer.play("Exit")
+func _active(_active, _name):
+	if _name == "Switch":
+		exit[0] = _active
 	else:
-		if !exit: $AnimationPlayer.play_backwards("Exit")
-		else: exit = false
+		exit[1] = _active
+	
+	if exit.count(true) == exit.size():
+		$AnimationPlayer.play("Exit")
+	elif open:
+		$AnimationPlayer.play_backwards("Exit")
 
 func _on_Exit_body_entered(body):
-	if exit && body.is_in_group("Player"):
-		if !change_level: change_level = true
-		else: Global.change_scene("Menus")
+	if get_overlapping_bodies().size() > 1 && open:
+		Global.change_scene("Menus")

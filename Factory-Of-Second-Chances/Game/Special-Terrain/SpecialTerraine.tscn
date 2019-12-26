@@ -1,22 +1,29 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://Game/Special-Terrain/SpecialTerraine.gd" type="Script" id=1]
-[ext_resource path="res://Game/Special-Terrain/Smoke.png" type="Texture" id=2]
-[ext_resource path="res://Game/Special-Terrain/Fire-01.png" type="Texture" id=3]
-[ext_resource path="res://Game/Special-Terrain/Fire-02.png" type="Texture" id=4]
-[ext_resource path="res://Game/Special-Terrain/Acid-01.png" type="Texture" id=5]
-[ext_resource path="res://Game/Special-Terrain/Acid-02.png" type="Texture" id=6]
+[ext_resource path="res://Game/Elements/Particle-01.png" type="Texture" id=2]
+[ext_resource path="res://Game/Special-Terrain/Poison-01.png" type="Texture" id=3]
+[ext_resource path="res://Game/Special-Terrain/Poison-02.png" type="Texture" id=4]
+[ext_resource path="res://Game/Special-Terrain/Fire-01.png" type="Texture" id=5]
+[ext_resource path="res://Game/Special-Terrain/Fire-02.png" type="Texture" id=6]
+[ext_resource path="res://Game/Special-Terrain/Acid-01.png" type="Texture" id=7]
+[ext_resource path="res://Game/Special-Terrain/Acid-02.png" type="Texture" id=8]
+[ext_resource path="res://Game/Special-Terrain/Electricity-01.png" type="Texture" id=9]
+[ext_resource path="res://Game/Special-Terrain/Electricity-02.png" type="Texture" id=10]
 
-[sub_resource type="Gradient" id=1]
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 160, 16 )
+
+[sub_resource type="Gradient" id=2]
 offsets = PoolRealArray( 0, 0.369718, 1 )
 colors = PoolColorArray( 1, 1, 1, 0, 1, 1, 1, 0.956808, 1, 1, 1, 0.466667 )
 
-[sub_resource type="GradientTexture" id=2]
-gradient = SubResource( 1 )
+[sub_resource type="GradientTexture" id=3]
+gradient = SubResource( 2 )
 
-[sub_resource type="ParticlesMaterial" id=3]
+[sub_resource type="ParticlesMaterial" id=4]
 emission_shape = 2
-emission_box_extents = Vector3( 300, 1, 1 )
+emission_box_extents = Vector3( 150, 1, 1 )
 flag_disable_z = true
 gravity = Vector3( 0, -900, 0 )
 angular_velocity = 1.11122e-038
@@ -24,15 +31,16 @@ orbit_velocity = 0.0
 orbit_velocity_random = 0.0
 linear_accel = 100.0
 linear_accel_random = 1.0
-scale = 0.05
+angle = 360.0
+angle_random = 1.0
+scale = 0.25
 scale_random = 0.25
-color_ramp = SubResource( 2 )
+color_ramp = SubResource( 3 )
 
-[sub_resource type="Animation" id=4]
-resource_name = "Acid"
+[sub_resource type="Animation" id=5]
 loop = true
 tracks/0/type = "value"
-tracks/0/path = NodePath("Acid/Acid1:scale")
+tracks/0/path = NodePath("Nodes/ACID/Acid-01:scale")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -44,10 +52,9 @@ tracks/0/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 0.97, 0.95 ), Vector2( 1, 0.97 ) ]
 }
 
-[sub_resource type="Animation" id=5]
-resource_name = "Acid_disable"
+[sub_resource type="Animation" id=6]
 tracks/0/type = "value"
-tracks/0/path = NodePath("Acid/Acid1:scale")
+tracks/0/path = NodePath("Nodes/ACID/Acid-01:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -59,16 +66,63 @@ tracks/0/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 0.6, 0.6 ), Vector2( 0.65, 0.65 ), Vector2( 0, 0 ) ]
 }
 
-[sub_resource type="Animation" id=6]
-resource_name = "Electricity"
-
 [sub_resource type="Animation" id=7]
-resource_name = "Electricity_disable"
-
-[sub_resource type="Animation" id=8]
 loop = true
 tracks/0/type = "value"
-tracks/0/path = NodePath("Fire/Fire1:frame")
+tracks/0/path = NodePath("Nodes/ELECTRICITY/Electricity-01:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 1 ]
+}
+
+[sub_resource type="Animation" id=8]
+tracks/0/type = "value"
+tracks/0/path = NodePath("Nodes/ELECTRICITY/Electricity-01:modulate")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Nodes/ELECTRICITY/Electricity-01:frame")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 1 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Nodes/ELECTRICITY/Electricity-01:scale")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 0.5, 0.5 ) ]
+}
+
+[sub_resource type="Animation" id=9]
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Nodes/FIRE/Fire-01:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -80,7 +134,7 @@ tracks/0/keys = {
 "values": [ 0, 1 ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("Fire/Fire1:scale")
+tracks/1/path = NodePath("Nodes/FIRE/Fire-01:scale")
 tracks/1/interp = 2
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -92,10 +146,9 @@ tracks/1/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 1, 0.95 ), Vector2( 1, 0.9 ) ]
 }
 
-[sub_resource type="Animation" id=9]
-resource_name = "Fire_disable"
+[sub_resource type="Animation" id=10]
 tracks/0/type = "value"
-tracks/0/path = NodePath("Fire/Fire1:scale")
+tracks/0/path = NodePath("Nodes/FIRE/Fire-01:scale")
 tracks/0/interp = 2
 tracks/0/loop_wrap = false
 tracks/0/imported = false
@@ -107,7 +160,7 @@ tracks/0/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 1, 0.7 ), Vector2( 1, 0.8 ), Vector2( 1, 0 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("Fire/Fire1:modulate")
+tracks/1/path = NodePath("Nodes/FIRE/Fire-01:modulate")
 tracks/1/interp = 2
 tracks/1/loop_wrap = false
 tracks/1/imported = false
@@ -119,13 +172,96 @@ tracks/1/keys = {
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 
-[sub_resource type="Animation" id=10]
-
 [sub_resource type="Animation" id=11]
-resource_name = "Poison_disable"
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Nodes/POISON/Poison-01:texture")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ ExtResource( 3 ), ExtResource( 4 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Nodes/POISON/Fire-01:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.3, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0.5, 0.5 ), Vector2( 0.5, 0.45 ), Vector2( 0.5, 0.4 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Nodes/POISON/Fire-01:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.25, 0.5, 0.75 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 3, 0, 3 ]
+}
 
-[sub_resource type="RectangleShape2D" id=12]
-extents = Vector2( 150, 16 )
+[sub_resource type="Animation" id=12]
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Nodes/POISON/Fire-01:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = false
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.3, 0.6, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0.5, 0.5 ), Vector2( 0.5, 0.2 ), Vector2( 0.5, 0.3 ), Vector2( 0.5, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Nodes/POISON/Fire-01:modulate")
+tracks/1/interp = 2
+tracks/1/loop_wrap = false
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Nodes/POISON/Fire-01:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.25, 0.5, 0.75 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 3, 0, 3 ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Nodes/POISON/Poison-01:texture")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ ExtResource( 4 ) ]
+}
 
 [node name="SpecialTerrain" type="Area2D" groups=[
 "Special",
@@ -134,61 +270,90 @@ collision_layer = 16
 collision_mask = 3
 script = ExtResource( 1 )
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2( 0, -10 )
+shape = SubResource( 1 )
+
 [node name="Particles2D" type="Particles2D" parent="."]
-modulate = Color( 0.66, 0.66, 0.66, 0.5 )
+modulate = Color( 1, 0, 0, 0.5 )
 position = Vector2( 0, -25 )
-scale = Vector2( 0.549237, 0.5 )
 z_index = 10
 amount = 25
-process_material = SubResource( 3 )
+lifetime = 0.65
+randomness = 1.0
+process_material = SubResource( 4 )
 texture = ExtResource( 2 )
 
 [node name="Animation" type="AnimationPlayer" parent="."]
-anims/Acid = SubResource( 4 )
-anims/Acid_disable = SubResource( 5 )
-anims/Electricity = SubResource( 6 )
-anims/Electricity_disable = SubResource( 7 )
-anims/Fire = SubResource( 8 )
-anims/Fire_disable = SubResource( 9 )
-anims/Poison = SubResource( 10 )
-anims/Poison_disable = SubResource( 11 )
+anims/ACID = SubResource( 5 )
+anims/ACID_disable = SubResource( 6 )
+anims/ELECTRICITY = SubResource( 7 )
+anims/ELECTRICITY_disable = SubResource( 8 )
+anims/FIRE = SubResource( 9 )
+anims/FIRE_disable = SubResource( 10 )
+anims/POISON = SubResource( 11 )
+anims/POISON_disable = SubResource( 12 )
 
-[node name="Fire" type="Node2D" parent="."]
+[node name="Nodes" type="Node2D" parent="."]
 
-[node name="Fire1" type="Sprite" parent="Fire"]
-modulate = Color( 1, 1, 1, 0.4 )
-position = Vector2( 0, -11 )
-scale = Vector2( 1, 0.8 )
+[node name="FIRE" type="Node2D" parent="Nodes"]
+
+[node name="Fire-01" type="Sprite" parent="Nodes/FIRE"]
+position = Vector2( 0, -21 )
+scale = Vector2( 1, 0.965177 )
 z_index = 1
-texture = ExtResource( 3 )
+texture = ExtResource( 5 )
 offset = Vector2( 0, -32 )
 vframes = 2
+frame = 1
 
-[node name="Fire2" type="Sprite" parent="Fire"]
-position = Vector2( 0, -78.646 )
-texture = ExtResource( 4 )
+[node name="Fire-02" type="Sprite" parent="Nodes/FIRE"]
+position = Vector2( 0, -88 )
+texture = ExtResource( 6 )
 
-[node name="Acid" type="Node2D" parent="."]
+[node name="ACID" type="Node2D" parent="Nodes"]
 visible = false
 
-[node name="Acid1" type="Sprite" parent="Acid"]
-texture = ExtResource( 5 )
+[node name="Acid-01" type="Sprite" parent="Nodes/ACID"]
+position = Vector2( 0, -10 )
+scale = Vector2( 0.970289, 0.951314 )
+texture = ExtResource( 7 )
 
-[node name="Acid2" type="Sprite" parent="Acid"]
-position = Vector2( 0, 7 )
+[node name="Acid-02" type="Sprite" parent="Nodes/ACID"]
+position = Vector2( 0, -3 )
 z_index = 1
-texture = ExtResource( 6 )
+texture = ExtResource( 8 )
 offset = Vector2( 0, -90 )
 
-[node name="Poison" type="Node2D" parent="."]
+[node name="POISON" type="Node2D" parent="Nodes"]
 visible = false
 
-[node name="Electricity" type="Node2D" parent="."]
+[node name="Poison-01" type="Sprite" parent="Nodes/POISON"]
+position = Vector2( 0, -100 )
+texture = ExtResource( 3 )
+
+[node name="Fire-01" type="Sprite" parent="Nodes/POISON"]
+position = Vector2( -8.44978, -35.0495 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 5 )
+offset = Vector2( -2.94321, -25.3472 )
+vframes = 2
+hframes = 3
+
+[node name="ELECTRICITY" type="Node2D" parent="Nodes"]
 visible = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-scale = Vector2( 1.08527, 1 )
-shape = SubResource( 12 )
+[node name="Electricity-01" type="Sprite" parent="Nodes/ELECTRICITY"]
+position = Vector2( 0, -35 )
+z_index = 1
+texture = ExtResource( 9 )
+vframes = 2
+frame = 1
+
+[node name="Electricity-02" type="Sprite" parent="Nodes/ELECTRICITY"]
+position = Vector2( 0, -100 )
+texture = ExtResource( 10 )
 [connection signal="body_entered" from="." to="." method="_on_SpecialTerrain_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_SpecialTerrain_body_exited"]
 [connection signal="animation_finished" from="Animation" to="." method="_on_Animation_animation_finished"]

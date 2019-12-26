@@ -1,47 +1,47 @@
-[gd_resource type="AnimationNodeStateMachine" load_steps=22 format=2]
+[gd_resource type="AnimationNodeStateMachine" load_steps=37 format=2]
 
 [sub_resource type="AnimationNodeAnimation" id=1]
 animation = "Action"
 
 [sub_resource type="AnimationNodeAnimation" id=2]
-animation = "Jump Transition"
+animation = "Attack"
 
 [sub_resource type="AnimationNodeAnimation" id=3]
-animation = "Idle"
+animation = "ChargeAttack"
 
 [sub_resource type="AnimationNodeAnimation" id=4]
-animation = "Jump Loop"
+animation = "Jump Transition"
 
 [sub_resource type="AnimationNodeAnimation" id=5]
-animation = "Jump"
+animation = "Idle"
 
 [sub_resource type="AnimationNodeAnimation" id=6]
+animation = "Jump Loop"
+
+[sub_resource type="AnimationNodeAnimation" id=7]
+animation = "Jump"
+
+[sub_resource type="AnimationNodeAnimation" id=8]
+animation = "SpecialAttack"
+
+[sub_resource type="AnimationNodeAnimation" id=9]
 animation = "Walk"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id=7]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id=8]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id=9]
-
 [sub_resource type="AnimationNodeStateMachineTransition" id=10]
-switch_mode = 2
-priority = 3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=11]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=12]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=13]
+switch_mode = 2
+priority = 3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=14]
-switch_mode = 2
-auto_advance = true
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=15]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=16]
-switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=17]
 switch_mode = 2
@@ -50,28 +50,75 @@ auto_advance = true
 [sub_resource type="AnimationNodeStateMachineTransition" id=18]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=19]
+switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=20]
 switch_mode = 2
 auto_advance = true
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=21]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=22]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=23]
 switch_mode = 2
 auto_advance = true
 
+[sub_resource type="AnimationNodeStateMachineTransition" id=24]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=25]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=26]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=27]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=28]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=29]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=30]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=31]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=32]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=33]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=34]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=35]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=36]
+
 [resource]
 states/Action/node = SubResource( 1 )
-states/Action/position = Vector2( 817, 151 )
-states/Fall/node = SubResource( 2 )
+states/Action/position = Vector2( 817, 382 )
+states/Attack/node = SubResource( 2 )
+states/Attack/position = Vector2( 1109, 151 )
+states/ChargeAttack/node = SubResource( 3 )
+states/ChargeAttack/position = Vector2( 1109, 382 )
+states/Fall/node = SubResource( 4 )
 states/Fall/position = Vector2( 419, 56 )
-states/Idle/node = SubResource( 3 )
+states/Idle/node = SubResource( 5 )
 states/Idle/position = Vector2( 636, 151 )
-states/Jump/node = SubResource( 5 )
+states/Jump/node = SubResource( 7 )
 states/Jump/position = Vector2( 636, -35 )
-"states/Jump Loop/node" = SubResource( 4 )
+"states/Jump Loop/node" = SubResource( 6 )
 "states/Jump Loop/position" = Vector2( 419, -35 )
-states/Walk/node = SubResource( 6 )
+states/SpecialAttack/node = SubResource( 8 )
+states/SpecialAttack/position = Vector2( 1109, 260 )
+states/Walk/node = SubResource( 9 )
 states/Walk/position = Vector2( 817, 56 )
-transitions = [ "Idle", "Walk", SubResource( 7 ), "Walk", "Idle", SubResource( 8 ), "Idle", "Fall", SubResource( 9 ), "Fall", "Idle", SubResource( 10 ), "Fall", "Walk", SubResource( 11 ), "Walk", "Fall", SubResource( 12 ), "Jump Loop", "Fall", SubResource( 13 ), "Jump", "Jump Loop", SubResource( 14 ), "Idle", "Jump", SubResource( 15 ), "Jump", "Fall", SubResource( 16 ), "Fall", "Jump Loop", SubResource( 17 ), "Walk", "Action", SubResource( 18 ), "Idle", "Action", SubResource( 19 ), "Action", "Idle", SubResource( 20 ), "Action", "Walk", SubResource( 21 ) ]
+transitions = [ "Idle", "Walk", SubResource( 10 ), "Walk", "Idle", SubResource( 11 ), "Idle", "Fall", SubResource( 12 ), "Fall", "Idle", SubResource( 13 ), "Fall", "Walk", SubResource( 14 ), "Walk", "Fall", SubResource( 15 ), "Jump Loop", "Fall", SubResource( 16 ), "Jump", "Jump Loop", SubResource( 17 ), "Idle", "Jump", SubResource( 18 ), "Jump", "Fall", SubResource( 19 ), "Fall", "Jump Loop", SubResource( 20 ), "Walk", "Action", SubResource( 21 ), "Idle", "Action", SubResource( 22 ), "Action", "Idle", SubResource( 23 ), "Action", "Walk", SubResource( 24 ), "Walk", "Attack", SubResource( 25 ), "Attack", "Walk", SubResource( 26 ), "Idle", "Attack", SubResource( 27 ), "Attack", "Idle", SubResource( 28 ), "Idle", "ChargeAttack", SubResource( 29 ), "ChargeAttack", "Idle", SubResource( 30 ), "ChargeAttack", "Walk", SubResource( 31 ), "Walk", "ChargeAttack", SubResource( 32 ), "ChargeAttack", "SpecialAttack", SubResource( 33 ), "SpecialAttack", "Walk", SubResource( 34 ), "SpecialAttack", "Idle", SubResource( 35 ), "ChargeAttack", "Attack", SubResource( 36 ) ]
 start_node = "Idle"
-graph_offset = Vector2( 98, -129 )
+graph_offset = Vector2( 244, 32 )

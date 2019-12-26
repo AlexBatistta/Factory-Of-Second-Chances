@@ -7,13 +7,15 @@ signal die_retry
 signal drag_box
 
 export (Global.Type) var type = Global.Type.FIRE setget _set_type
-export (Array, NodePath) var body_parts
-export var health = 5
 export (int, "PLAYER_1", "PLAYER_2") var player_type = 0 setget _set_player
+export (bool) var flip setget _set_flip
+export (PackedScene) var Bullet
+export (Array, NodePath) var body_parts
+export (float, 0, 5) var timeSpecial = 1.5
 
 const GRAVITY = 3000
 const SPEED = 300
-const JUMP_SPEED = 1000
+const JUMP_SPEED = 800
 const TIME_TWEEN = 0.4
 const INERTIA = 100
 
@@ -34,20 +36,29 @@ var face_normal = load("res://Game/Player/Body-Parts/Face-Normal.png")
 var face_hurt = load("res://Game/Player/Body-Parts/Face-Hurt.png")
 
 onready var size = $CollisionShape2D.shape.extents + Vector2(20,0)
+onready var bullet_spawn = $Body/Head/Element
 
 func _set_type(_type):
 	type = _type
+	
 	if Engine.is_editor_hint():
 		_change_color()
 
 func _set_player(_player):
 	player_type = _player
-	z_index = player_type# * 2
+	z_index = player_type
 	set_collision_layer_bit(0, bool(!player_type))
 	set_collision_layer_bit(1, bool(player_type))
 
+func _set_flip(_flip):
+	flip = _flip
+	
+	$Body.scale.x = -1 if flip else 1
+	#if sign(float(size.x)) != _direction:
+	#	size.x *= -1
+
 func _change_color():
-	$Body/Head/Element.texture = load("res://Game/Elements/Element" + str(type) + ".png")
+	$Body/Head/Element.texture = load("res://Game/Elements/Element-0" + str(type + 1) + ".png")
 	$Body/Head/Element.modulate = Global._color(type, dead)
 	for part in body_parts:
 		get_node(part).type = type
@@ -57,10 +68,10 @@ func _ready():
 	$Body/Tween.interpolate_callback(self, TIME_TWEEN / 2, "_blink", false)
 	$Body/Tween.start()
 	
+	$AnimationTree.active = true
 	playback = $AnimationTree.get("parameters/playback")
 	#playback.travel(state)
 	
-	maxLife = health
 	_change_color()
 	
 	randomize()
@@ -77,22 +88,15 @@ func _physics_process(delta):
 		else:
 			_swimming(delta)
 		
-		#Aplica la velocidad
-		if dead || playback.get_current_node() == "Action": velocity.x = 0
-		velocity = move_and_slide_with_snap(velocity, snap, Vector2(0, -1), false, 4, PI / 4, false)
-		
-		if drag:
-			if Input.is_action_just_pressed("action_" + str(player_type)):
-				emit_signal("drag_box")
+		_attack()
 		
 		#Animación
 		if $AnimationTree.active: 
 			_animate()
 		
-		for index in get_slide_count():
-			var collision = get_slide_collision(index)
-			if collision.collider.is_in_group("Box"):
-				collision.collider.apply_central_impulse(-collision.normal * INERTIA)
+		#Aplica la velocidad
+		if dead || _stop(): velocity.x = 0
+		velocity = move_and_slide_with_snap(velocity, snap, Vector2(0, -1), false, 4, PI / 4, false)
 
 #Movimiento
 func _move(delta):
@@ -101,7 +105,8 @@ func _move(delta):
 	
 	velocity.y += delta * GRAVITY
 	
-	velocity.x = direction.x * SPEED
+	velocity.x = lerp(velocity.x, direction.x * SPEED, delta * 10)
+	if abs(velocity.x) < 40: velocity.x = 0
 	
 	#Si está en el suelo se habilita el salto
 	if is_on_floor() && !dead:
@@ -114,12 +119,22 @@ func _move(delta):
 			snap = Vector2.ZERO
 			
 			state = "Jump"
-			
-			#Sonido de salto
-			#$PlayerSounds.stream = load("res://Sound/Jump.ogg")
-			#$PlayerSounds.play()
+		
 		if Input.is_action_just_pressed("action_" + str(player_type)):
 			state = "Action"
+
+func _attack():
+	if Input.is_action_just_pressed("attack_" + str(player_type)):
+		if $SpecialKey.is_stopped():
+			$SpecialKey.start(timeSpecial)
+	
+	if Input.is_action_pressed("attack_" + str(player_type)):
+		if $SpecialKey.time_left < timeSpecial - 0.5: state = "ChargeAttack"
+	
+	if Input.is_action_just_released("attack_" + str(player_type)):
+		state = "Attack"
+		if $SpecialKey.time_left < 0.5: state = "SpecialAttack"
+		else: $SpecialKey.stop()
 
 func _river(_active, _top = 0):
 	swimming = _active
@@ -146,9 +161,16 @@ func _swimming(delta):
 	
 	#Salida del río, si choca contra una pared y esta cerca de la 
 	#superficie, se lo impulsa a salir
-	if is_on_wall() && position.y < topRiver:
+	if is_on_wall() && position.y < topRiver + 15:
 		velocity.x = SPEED * direction.x
-		velocity.y = -JUMP_SPEED * 0.75
+		velocity.y = -JUMP_SPEED
+
+func _shoot(_direction, _explosive = false):
+	var bullet = Bullet.instance()
+	var bullet_dir = Vector2($Body.scale.x * sign(_direction), abs(_direction))
+	
+	bullet._shoot(type, bullet_dir, bullet_spawn.global_position * 2, _explosive)
+	get_parent().add_child(bullet)
 
 #Animación
 func _animate():
@@ -168,12 +190,23 @@ func _animate():
 	#Cambio de dirección
 	if direction.x != 0: 
 		$Body.scale.x = direction.x
-		if sign(float(size.x)) != direction.x:
-			size.x *= -1
+
+func _push():
+	state = "Jump"
+	
+	velocity.x = SPEED * $Body.scale.x * 3
+	velocity.y = -JUMP_SPEED
+	
+	velocity = move_and_slide(velocity)
+
+func _immunity(_time):
+	$Immunity.start(_time)
+	$Particles2D.visible = true
+	$Particles2D.emitting = true
 
 func _live_or_die(_type):
 	dead = true if _type != type else false
-	if _type == -1: dead = false
+	if !$Immunity.is_stopped() || _type == -1: dead = false
 	
 	for part in body_parts:
 		get_node(part).dead = dead
@@ -212,3 +245,13 @@ func _on_Tween_tween_completed(object, key):
 	
 	$Body/Tween.start()
 
+func _stop():
+	match playback.get_current_node():
+		"Action", "Attack", "ChargeAttack", "SpecialAttack":
+			return true
+		_:
+			return false
+
+func _on_Immunity_timeout():
+	$Particles2D.visible = false
+	$Particles2D.emitting = false

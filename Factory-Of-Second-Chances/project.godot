@@ -16,7 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Factory Of Second Chances"
-run/main_scene="res://Game/Game.tscn"
+run/main_scene="res://Menus/Menu.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -188,6 +188,9 @@ attack_1={
 2d_physics/layer_5="River"
 2d_physics/layer_6="Switch"
 2d_physics/layer_7="Box"
+2d_physics/layer_8="Bullet"
+2d_physics/layer_9="SpecialBarrier"
+2d_physics/layer_10="Solid"
 
 [rendering]
 

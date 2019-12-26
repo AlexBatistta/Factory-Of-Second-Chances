@@ -16,6 +16,7 @@ var sound = true
 var music = true
 
 signal transition
+signal shake
 
 var dual_camera : bool = false
 var special_disable : bool = false

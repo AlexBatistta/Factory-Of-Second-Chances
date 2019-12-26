@@ -1,0 +1,192 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://Game/Bullet/Bullet.gd" type="Script" id=1]
+[ext_resource path="res://Game/Bullet/Particle.tres" type="Material" id=2]
+[ext_resource path="res://Game/Elements/Particle-01.png" type="Texture" id=3]
+[ext_resource path="res://Game/Bullet/Explosive.tres" type="Material" id=4]
+[ext_resource path="res://Game/Bullet/Bullet.png" type="Texture" id=5]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 25.0
+
+[sub_resource type="Animation" id=2]
+resource_name = "ACID"
+length = 0.2
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 2, 3 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "ELECTRICITY"
+length = 0.2
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 4, 5 ]
+}
+
+[sub_resource type="Animation" id=4]
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Particles2D:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Explosive:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0.00165419 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Explosive:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=5]
+length = 0.2
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 1 ]
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "POISON"
+length = 0.2
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 6, 7 ]
+}
+
+[node name="Bullet" type="Area2D" groups=[
+"Bullet",
+]]
+position = Vector2( 0, -1 )
+z_index = 5
+collision_layer = 128
+collision_mask = 260
+script = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource( 1 )
+
+[node name="Particles2D" type="Particles2D" parent="."]
+modulate = Color( 1, 0, 0, 1 )
+rotation = -1.5708
+amount = 16
+process_material = ExtResource( 2 )
+texture = ExtResource( 3 )
+
+[node name="Explosive" type="Particles2D" parent="."]
+visible = false
+modulate = Color( 1, 0, 0, 1 )
+rotation = -1.5708
+emitting = false
+amount = 16
+one_shot = true
+explosiveness = 1.0
+process_material = ExtResource( 4 )
+texture = ExtResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="."]
+rotation = -1.5708
+texture = ExtResource( 5 )
+vframes = 2
+hframes = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/ACID = SubResource( 2 )
+anims/ELECTRICITY = SubResource( 3 )
+anims/Exploit = SubResource( 4 )
+anims/FIRE = SubResource( 5 )
+anims/POISON = SubResource( 6 )
+
+[node name="LiveTimer" type="Timer" parent="."]
+one_shot = true
+[connection signal="area_entered" from="." to="." method="_collide"]
+[connection signal="body_entered" from="." to="." method="_collide"]
+[connection signal="timeout" from="LiveTimer" to="." method="_on_LiveTimer_timeout"]

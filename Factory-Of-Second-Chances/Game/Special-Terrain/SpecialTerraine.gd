@@ -2,32 +2,27 @@ tool
 extends Area2D
 
 export (Global.Type) var type = Global.Type.FIRE setget _set_type
-
-var type_name = ["Fire", "Acid", "Poison", "Electricity"]
 var current_name = ""
 
 func _set_type(_type):
-	for node in type_name:
-		get_node(node).visible = false
-	
 	type = _type
-	current_name = type_name[type]
 	
-	match type:
-		0:	$Particles2D.modulate = Color.darkgray
-		1:	$Particles2D.modulate = Color.limegreen
-		2:	$Particles2D.modulate = Color.mediumorchid
-		3:	$Particles2D.modulate = Color.yellow
+	var children = $Nodes.get_children()
+	for node in children:
+		node.visible = false
 	
+	$Particles2D.modulate = Global._color(type, false, false)
+	if type == Global.Type.FIRE: $Particles2D.modulate = Global._color(type, false)
 	$Particles2D.modulate.a = 0.5
+	$Particles2D.texture = load("res://Game/Elements/Particle-0" + str(type + 1) + ".png")
 	
-	get_node(current_name).visible = true
+	current_name = Global.Type.keys()[type]
 	
+	$Nodes.get_node(current_name).visible = true
 	$Animation.play(current_name)
 
 func _ready():
-	if !Engine.is_editor_hint():
-		_set_type(type)
+	_set_type(type)
 
 func _disable():
 	$CollisionShape2D.disabled = Global.special_disable
